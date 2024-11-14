@@ -1,0 +1,3 @@
+/home/kijonka/projekt/build/CMakeFiles/pacman.dir
+/home/kijonka/projekt/build/CMakeFiles/edit_cache.dir
+/home/kijonka/projekt/build/CMakeFiles/rebuild_cache.dir
