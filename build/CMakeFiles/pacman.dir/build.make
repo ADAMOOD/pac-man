@@ -69,28 +69,28 @@ include CMakeFiles/pacman.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/pacman.dir/flags.make
 
-CMakeFiles/pacman.dir/main.c.o: CMakeFiles/pacman.dir/flags.make
-CMakeFiles/pacman.dir/main.c.o: /home/kijonka/projekt/main.c
-CMakeFiles/pacman.dir/main.c.o: CMakeFiles/pacman.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kijonka/projekt/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/pacman.dir/main.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/pacman.dir/main.c.o -MF CMakeFiles/pacman.dir/main.c.o.d -o CMakeFiles/pacman.dir/main.c.o -c /home/kijonka/projekt/main.c
+CMakeFiles/pacman.dir/src/main.c.o: CMakeFiles/pacman.dir/flags.make
+CMakeFiles/pacman.dir/src/main.c.o: /home/kijonka/projekt/src/main.c
+CMakeFiles/pacman.dir/src/main.c.o: CMakeFiles/pacman.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kijonka/projekt/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/pacman.dir/src/main.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/pacman.dir/src/main.c.o -MF CMakeFiles/pacman.dir/src/main.c.o.d -o CMakeFiles/pacman.dir/src/main.c.o -c /home/kijonka/projekt/src/main.c
 
-CMakeFiles/pacman.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/pacman.dir/main.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/kijonka/projekt/main.c > CMakeFiles/pacman.dir/main.c.i
+CMakeFiles/pacman.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/pacman.dir/src/main.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/kijonka/projekt/src/main.c > CMakeFiles/pacman.dir/src/main.c.i
 
-CMakeFiles/pacman.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/pacman.dir/main.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/kijonka/projekt/main.c -o CMakeFiles/pacman.dir/main.c.s
+CMakeFiles/pacman.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/pacman.dir/src/main.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/kijonka/projekt/src/main.c -o CMakeFiles/pacman.dir/src/main.c.s
 
 # Object files for target pacman
 pacman_OBJECTS = \
-"CMakeFiles/pacman.dir/main.c.o"
+"CMakeFiles/pacman.dir/src/main.c.o"
 
 # External object files for target pacman
 pacman_EXTERNAL_OBJECTS =
 
-pacman: CMakeFiles/pacman.dir/main.c.o
+pacman: CMakeFiles/pacman.dir/src/main.c.o
 pacman: CMakeFiles/pacman.dir/build.make
 pacman: /usr/lib/x86_64-linux-gnu/libSDL2.so
 pacman: CMakeFiles/pacman.dir/link.txt
