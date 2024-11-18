@@ -1,0 +1,13 @@
+[ 50%] Linking C executable pacman
+/usr/bin/ld: CMakeFiles/pacman.dir/src/main.c.o: in function `main':
+main.c:(.text+0x132): undefined reference to `TTF_Init'
+/usr/bin/ld: main.c:(.text+0x137): undefined reference to `TTF_Init'
+/usr/bin/ld: main.c:(.text+0x305): undefined reference to `TTF_OpenFont'
+/usr/bin/ld: main.c:(.text+0x38b): undefined reference to `TTF_Quit'
+/usr/bin/ld: main.c:(.text+0x42b): undefined reference to `sdl_draw_text'
+/usr/bin/ld: main.c:(.text+0x4ab): undefined reference to `TTF_CloseFont'
+/usr/bin/ld: main.c:(.text+0x4ce): undefined reference to `TTF_Quit'
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/pacman.dir/build.make:98: pacman] Error 1
+make[1]: *** [CMakeFiles/Makefile2:83: CMakeFiles/pacman.dir/all] Error 2
+make: *** [Makefile:91: all] Error 2
