@@ -1,0 +1,27 @@
+# Ignorovat složku build (výstupy kompilace)
+build/
+
+# Ignorovat binární soubory
+*.exe
+*.out
+*.o
+*.a
+*.so
+*.dll
+
+# Ignorovat záložní soubory editorů
+*~
+*.swp
+
+# Ignorovat ladící soubory
+*.log
+*.err
+
+# Ignorovat konfigurace IDE/editorů
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignorovat systémové soubory
+.DS_Store
+Thumbs.db
