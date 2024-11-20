@@ -129,6 +129,30 @@ pacman/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/build
 .PHONY : pacman/fast
 
+src/drawing.o: src/drawing.c.o
+.PHONY : src/drawing.o
+
+# target to build an object file
+src/drawing.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/drawing.c.o
+.PHONY : src/drawing.c.o
+
+src/drawing.i: src/drawing.c.i
+.PHONY : src/drawing.i
+
+# target to preprocess a source file
+src/drawing.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/drawing.c.i
+.PHONY : src/drawing.c.i
+
+src/drawing.s: src/drawing.c.s
+.PHONY : src/drawing.s
+
+# target to generate assembly for a file
+src/drawing.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/drawing.c.s
+.PHONY : src/drawing.c.s
+
 src/main.o: src/main.c.o
 .PHONY : src/main.o
 
@@ -153,6 +177,30 @@ src/main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/main.c.s
 .PHONY : src/main.c.s
 
+src/menu.o: src/menu.c.o
+.PHONY : src/menu.o
+
+# target to build an object file
+src/menu.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/menu.c.o
+.PHONY : src/menu.c.o
+
+src/menu.i: src/menu.c.i
+.PHONY : src/menu.i
+
+# target to preprocess a source file
+src/menu.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/menu.c.i
+.PHONY : src/menu.c.i
+
+src/menu.s: src/menu.c.s
+.PHONY : src/menu.s
+
+# target to generate assembly for a file
+src/menu.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/menu.c.s
+.PHONY : src/menu.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,9 +210,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... pacman"
+	@echo "... src/drawing.o"
+	@echo "... src/drawing.i"
+	@echo "... src/drawing.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/menu.o"
+	@echo "... src/menu.i"
+	@echo "... src/menu.s"
 .PHONY : help
 
 

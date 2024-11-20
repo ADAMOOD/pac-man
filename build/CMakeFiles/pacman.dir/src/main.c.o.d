@@ -187,4 +187,6 @@ CMakeFiles/pacman.dir/src/main.c.o: /home/kijonka/projekt/src/main.c \
  /usr/include/SDL2/SDL_system.h /usr/include/SDL2/SDL_timer.h \
  /usr/include/SDL2/SDL_version.h /usr/include/SDL2/SDL_locale.h \
  /usr/include/SDL2/SDL_misc.h /usr/include/SDL2/SDL_ttf.h \
- /usr/include/SDL2/SDL.h
+ /usr/include/SDL2/SDL.h /home/kijonka/projekt/include/drawing.h \
+ /home/kijonka/projekt/include/universal.h \
+ /home/kijonka/projekt/include/menu.h

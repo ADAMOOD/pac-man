@@ -1,1 +1,1 @@
-/usr/bin/cc  -fsanitize=address CMakeFiles/pacman.dir/src/main.c.o -o pacman  /usr/lib/x86_64-linux-gnu/libSDL2.so -lm 
+/usr/bin/cc  -fsanitize=address CMakeFiles/pacman.dir/src/main.c.o CMakeFiles/pacman.dir/src/drawing.c.o CMakeFiles/pacman.dir/src/menu.c.o -o pacman  /usr/lib/x86_64-linux-gnu/libSDL2.so -lSDL2_ttf -lm 

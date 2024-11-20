@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "universal.h": "c"
+        "universal.h": "c",
+        "menu.h": "c",
+        "drawing.h": "c"
     }
 }

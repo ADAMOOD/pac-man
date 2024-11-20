@@ -1,6 +1,8 @@
 #include "universal.h"
+#include "drawing.h"
+#include "menu.h"
 
-void sdl_draw_text(SDL_Renderer* renderer, TTF_Font* font, SDL_Color color, SDL_Rect location, const char* text);
+void sdl_draw_text(SDL_Renderer *renderer, TTF_Font *font, SDL_Color color, SDL_Rect location, const char *text);
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +21,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("SDL experiments", 100, 100, 800, 600, SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow("SDL experiments", 100, 100, SCREENHEIGHT, SCREENWIDTH, SDL_WINDOW_SHOWN);
     if (!window)
     {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
@@ -38,51 +40,51 @@ int main(int argc, char *argv[])
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-    TTF_Font *font = TTF_OpenFont("Arial.ttf", 20);
-     if (!font) {
-         fprintf(stderr, "TTF_OpenFont Error: %s\n", TTF_GetError());
-         SDL_DestroyRenderer(renderer);
-         SDL_DestroyWindow(window);
-         SDL_Quit();
-         TTF_Quit();
-         return 1;
-     }
+    TTF_Font *font = TTF_OpenFont("PacFont.ttf", 50);
 
-     SDL_Color txtcolor = {255, 0, 0, 255};
-     SDL_Rect rect = {100, 200, 500, 200};
+    if (!font)
+    {
+        fprintf(stderr, "TTF_OpenFont Error: %s\n", TTF_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        TTF_Quit();
+        return 1;
+    }
+
+    SDL_Color txtcolor = {255, 0, 0, 255};
+    SDL_Rect rect = {100, 200, 500, 200};
 
     int running = 1;
+    int in_menu = 1;
     SDL_Event event;
-
-    while (running)
-    {
-        SDL_RenderClear(renderer);
-         sdl_draw_text(renderer, font, txtcolor, rect, "hroch");
-
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
+    int selectedIndex = 0;
+while (running) {
+        // Event handling
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
                 running = 0;
+            }
+            int result = menu_handle_event(&event, &selectedIndex);
+            if (result != MENU_CONTINUE) {
+                running = 0;
+                // Provést požadovanou akci podle výběru
             }
         }
 
+        // Renderování menu s aktuálně vybranou položkou
+        menu_render(renderer, selectedIndex);
+
+        // Aktualizace obrazovky
         SDL_RenderPresent(renderer);
     }
 
-     TTF_CloseFont(font);
+
+    TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-     TTF_Quit();
+    TTF_Quit();
     SDL_Quit();
 
     return 0;
 }
-
-/*void sdl_draw_text(SDL_Renderer* renderer, TTF_Font* font, SDL_Color color, SDL_Rect location, const char* text) {
-    SDL_Surface* surface = TTF_RenderText_Blended(font, text, color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_RenderCopy(renderer, texture, NULL, &location);
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(surface);
-}*/

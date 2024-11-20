@@ -9,11 +9,14 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
 include_directories(include)
 
 find_package(SDL2 REQUIRED)
-find_package(SDL2_ttf REQUIRED)
 
+
+set(SDL2_TTF_LIBRARIES "SDL2_ttf")
 
 set(SOURCES
     src/main.c
+    src/drawing.c
+    src/menu.c
 )
 
 
