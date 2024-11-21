@@ -17,6 +17,8 @@ set(SOURCES
     src/main.c
     src/drawing.c
     src/menu.c
+    src/map.c
+    src/game.c
 )
 
 

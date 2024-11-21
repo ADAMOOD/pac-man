@@ -3,6 +3,10 @@
 
 void menu_render(SDL_Renderer *renderer, int selected_index)
 {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Nastavení černé barvy pro pozadí
+    SDL_RenderClear(renderer); // Vyčištění obrazovky
+    //dulezite
+
     SDL_Color normal_color = {255, 255, 255, 255};   // Bílá pro normální položky
     SDL_Color selected_color = {0, 255, 0, 255};     // Zelená pro vybranou položku
     const char *menu_items[] = {"PAC-MAN", "Start Game", "Exit"};
@@ -17,11 +21,10 @@ void menu_render(SDL_Renderer *renderer, int selected_index)
 
     for (int i = 0; i < num_items; ++i)
     {
-        // Zvolení fontu podle položky
         TTF_Font* currentFont = (i == 0) ? largeFont : bigFont;
 
         // Určení barvy podle toho, zda je položka vybraná
-        SDL_Color currentColor = (i == selected_index) ? selected_color : normal_color;
+        SDL_Color currentColor = (i-1 == selected_index) ? selected_color : normal_color;
 
         int textWidth, textHeight;
         TTF_SizeText(currentFont, menu_items[i], &textWidth, &textHeight);
@@ -49,24 +52,26 @@ int menu_handle_event(SDL_Event *event, int *selected_index)
         if (event->key.keysym.sym == SDLK_RETURN)  // Enter pro výběr
         {
             if (*selected_index == 0) {
+                //SDL_Log("%ls",selected_index);
                 return MENU_START_GAME;  // Start Game
-            } else if (*selected_index == 2) {
+            } else if (*selected_index == 1) {
+                //SDL_Log("%ls",selected_index);
                 return MENU_EXIT;  // Exit
             }
         }
-        else if (event->key.keysym.sym == SDLK_ESCAPE)  // Esc pro opuštění
+        else if (event->key.keysym.sym == SDLK_ESCAPE) 
         {
-            return MENU_EXIT;
+            //return MENU_EXIT;// muze byt pro implementaci pozdeji nejakeho pouse
         }
-        else if (event->key.keysym.sym == SDLK_UP)  // Šipka nahoru
+        else if (event->key.keysym.sym == SDLK_UP) 
         {
             if (*selected_index > 0) {
                 (*selected_index)--;  // Snížení indexu pro výběr
             }
         }
-        else if (event->key.keysym.sym == SDLK_DOWN)  // Šipka dolů
+        else if (event->key.keysym.sym == SDLK_DOWN) 
         {
-            if (*selected_index < 2) {
+            if (*selected_index < 1) {
                 (*selected_index)++;  // Zvýšení indexu pro výběr
             }
         }

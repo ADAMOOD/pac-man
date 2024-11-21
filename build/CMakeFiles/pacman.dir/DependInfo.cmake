@@ -9,7 +9,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/kijonka/projekt/src/drawing.c" "CMakeFiles/pacman.dir/src/drawing.c.o" "gcc" "CMakeFiles/pacman.dir/src/drawing.c.o.d"
+  "/home/kijonka/projekt/src/game.c" "CMakeFiles/pacman.dir/src/game.c.o" "gcc" "CMakeFiles/pacman.dir/src/game.c.o.d"
   "/home/kijonka/projekt/src/main.c" "CMakeFiles/pacman.dir/src/main.c.o" "gcc" "CMakeFiles/pacman.dir/src/main.c.o.d"
+  "/home/kijonka/projekt/src/map.c" "CMakeFiles/pacman.dir/src/map.c.o" "gcc" "CMakeFiles/pacman.dir/src/map.c.o.d"
   "/home/kijonka/projekt/src/menu.c" "CMakeFiles/pacman.dir/src/menu.c.o" "gcc" "CMakeFiles/pacman.dir/src/menu.c.o.d"
   )
 

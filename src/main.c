@@ -1,6 +1,7 @@
 #include "universal.h"
 #include "drawing.h"
 #include "menu.h"
+#include "game.h"
 
 void sdl_draw_text(SDL_Renderer *renderer, TTF_Font *font, SDL_Color color, SDL_Rect location, const char *text);
 
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("SDL experiments", 100, 100, SCREENHEIGHT, SCREENWIDTH, SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow("SDL experiments", 100, 100, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_SHOWN);
     if (!window)
     {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
@@ -51,40 +52,69 @@ int main(int argc, char *argv[])
         TTF_Quit();
         return 1;
     }
-
     SDL_Color txtcolor = {255, 0, 0, 255};
     SDL_Rect rect = {100, 200, 500, 200};
 
     int running = 1;
-    int in_menu = 1;
     SDL_Event event;
     int selectedIndex = 0;
-while (running) {
-        // Event handling
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = 0;
+    int result = MENU_CONTINUE;
+    GameState state = STATE_MENU;
+    while (running)
+    {
+        SDL_Event event;
+
+        // Zpracování událostí
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                running = 0; // Ukončení celé aplikace
             }
-            int result = menu_handle_event(&event, &selectedIndex);
-            if (result != MENU_CONTINUE) {
-                running = 0;
-                // Provést požadovanou akci podle výběru
+
+            if (state == STATE_MENU)
+            {
+                int result = menu_handle_event(&event, &selectedIndex);
+
+                if (result == MENU_EXIT)
+                {
+                    running = 0; // Ukončení aplikace
+                }
+                else if (result == MENU_START_GAME)
+                {
+                    state = STATE_GAME; // Přepnout do herního režimu
+                }
+            }
+            else if (state == STATE_GAME)
+            {
+                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+                {
+                    state = STATE_MENU; // Návrat do menu při stisku Escape
+                }
+                // Další zpracování herních událostí, pokud je potřeba
             }
         }
-
-        // Renderování menu s aktuálně vybranou položkou
-        menu_render(renderer, selectedIndex);
-
-        // Aktualizace obrazovky
-        SDL_RenderPresent(renderer);
+        // Vykreslování
+        SDL_RenderClear(renderer);
+        if (state == STATE_EXIT)
+        {
+            running = 0; // Ukončení aplikacea
+        }
+        if (state == STATE_MENU)
+        {
+            menu_render(renderer, selectedIndex);
+        }
+        else if (state == STATE_GAME)
+        {
+            state = GameTest(renderer); // Vykreslení herní obrazovky
+        }
+        SDL_RenderPresent(renderer); // Aktualizace obrazovky
     }
-
 
     TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();
     SDL_Quit();
-
     return 0;
 }
