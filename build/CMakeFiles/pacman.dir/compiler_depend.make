@@ -22,6 +22,7 @@ CMakeFiles/pacman.dir/src/drawing.c.o: /home/kijonka/projekt/src/drawing.c \
   /usr/include/SDL2/SDL_haptic.h \
   /usr/include/SDL2/SDL_hidapi.h \
   /usr/include/SDL2/SDL_hints.h \
+  /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL_joystick.h \
   /usr/include/SDL2/SDL_keyboard.h \
   /usr/include/SDL2/SDL_keycode.h \
@@ -251,6 +252,7 @@ CMakeFiles/pacman.dir/src/game.c.o: /home/kijonka/projekt/src/game.c \
   /usr/include/SDL2/SDL_haptic.h \
   /usr/include/SDL2/SDL_hidapi.h \
   /usr/include/SDL2/SDL_hints.h \
+  /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL_joystick.h \
   /usr/include/SDL2/SDL_keyboard.h \
   /usr/include/SDL2/SDL_keycode.h \
@@ -480,6 +482,7 @@ CMakeFiles/pacman.dir/src/main.c.o: /home/kijonka/projekt/src/main.c \
   /usr/include/SDL2/SDL_haptic.h \
   /usr/include/SDL2/SDL_hidapi.h \
   /usr/include/SDL2/SDL_hints.h \
+  /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL_joystick.h \
   /usr/include/SDL2/SDL_keyboard.h \
   /usr/include/SDL2/SDL_keycode.h \
@@ -707,6 +710,7 @@ CMakeFiles/pacman.dir/src/map.c.o: /home/kijonka/projekt/src/map.c \
   /usr/include/SDL2/SDL_haptic.h \
   /usr/include/SDL2/SDL_hidapi.h \
   /usr/include/SDL2/SDL_hints.h \
+  /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL_joystick.h \
   /usr/include/SDL2/SDL_keyboard.h \
   /usr/include/SDL2/SDL_keycode.h \
@@ -935,6 +939,7 @@ CMakeFiles/pacman.dir/src/menu.c.o: /home/kijonka/projekt/src/menu.c \
   /usr/include/SDL2/SDL_haptic.h \
   /usr/include/SDL2/SDL_hidapi.h \
   /usr/include/SDL2/SDL_hints.h \
+  /usr/include/SDL2/SDL_image.h \
   /usr/include/SDL2/SDL_joystick.h \
   /usr/include/SDL2/SDL_keyboard.h \
   /usr/include/SDL2/SDL_keycode.h \
@@ -1264,8 +1269,6 @@ CMakeFiles/pacman.dir/src/menu.c.o: /home/kijonka/projekt/src/menu.c \
 
 /usr/include/x86_64-linux-gnu/bits/fp-logb.h:
 
-/usr/include/alloca.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx5124fmapsintrin.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
@@ -1282,9 +1285,9 @@ CMakeFiles/pacman.dir/src/menu.c.o: /home/kijonka/projekt/src/menu.c \
 
 /usr/include/SDL2/SDL_system.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/prfchwintrin.h:
+/usr/include/x86_64-linux-gnu/sys/select.h:
 
-/usr/include/features.h:
+/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/cmpccxaddintrin.h:
 
@@ -1353,6 +1356,10 @@ CMakeFiles/pacman.dir/src/menu.c.o: /home/kijonka/projekt/src/menu.c \
 /usr/lib/gcc/x86_64-linux-gnu/13/include/prfchiintrin.h:
 
 /usr/include/SDL2/SDL_audio.h:
+
+/usr/include/alloca.h:
+
+/usr/include/SDL2/SDL_image.h:
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
@@ -1443,6 +1450,10 @@ CMakeFiles/pacman.dir/src/menu.c.o: /home/kijonka/projekt/src/menu.c \
 /usr/include/SDL2/SDL_messagebox.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/prfchwintrin.h:
+
+/usr/include/features.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avxneconvertintrin.h:
 
@@ -1603,7 +1614,3 @@ CMakeFiles/pacman.dir/src/menu.c.o: /home/kijonka/projekt/src/menu.c \
 /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
-
-/usr/include/x86_64-linux-gnu/sys/select.h:

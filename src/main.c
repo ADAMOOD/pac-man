@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
         return 1;
     }
-    SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
 
     if (TTF_Init() == -1)
@@ -22,7 +21,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("SDL experiments", 100, 100, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow("SDL experiments", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_SHOWN);
     if (!window)
     {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
@@ -62,8 +61,6 @@ int main(int argc, char *argv[])
     GameState state = STATE_MENU;
     while (running)
     {
-        SDL_Event event;
-
         // Zpracování událostí
         while (SDL_PollEvent(&event))
         {

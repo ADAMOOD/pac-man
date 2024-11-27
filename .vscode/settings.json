@@ -4,6 +4,12 @@
         "menu.h": "c",
         "drawing.h": "c",
         "game.h": "c",
-        "map.h": "c"
+        "map.h": "c",
+        "sdl_image.h": "c",
+        "string.h": "c",
+        "map": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c"
     }
 }

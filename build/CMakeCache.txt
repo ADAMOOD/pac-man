@@ -224,8 +224,20 @@ PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
 //The directory containing a CMake configuration file for SDL2.
 SDL2_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/SDL2
 
+//No help, variable specified on the command line.
+SDL2_IMAGE_INCLUDE_DIR:UNINITIALIZED=/path/to/SDL2_image/include
+
+//No help, variable specified on the command line.
+SDL2_IMAGE_LIBRARY:UNINITIALIZED=/path/to/SDL2_image/libSDL2_image.so
+
+//The directory containing a CMake configuration file for SDL2_image.
+SDL2_image_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/SDL2_image
+
 //The directory containing a CMake configuration file for SDL2_ttf.
 SDL2_ttf_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/SDL2_ttf
+
+//Path to a program.
+VALGRIND_EXECUTABLE:FILEPATH=/usr/bin/valgrind
 
 //Value Computed by CMake
 pacman_BINARY_DIR:STATIC=/home/kijonka/projekt/build
