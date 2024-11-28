@@ -12,8 +12,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
         return 1;
     }
-    TTF_Init();
-
+    
     if (TTF_Init() == -1)
     {
         fprintf(stderr, "TTF_Init Error: %s\n", TTF_GetError());

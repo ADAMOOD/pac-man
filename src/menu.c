@@ -37,10 +37,9 @@ void menu_render(SDL_Renderer *renderer, int selected_index)
             textWidth,
             textHeight
         };
-
+        
         sdl_draw_text(renderer, currentFont, currentColor, location, menu_items[i]);
     }
-
     TTF_CloseFont(largeFont);
     TTF_CloseFont(bigFont);
 }
