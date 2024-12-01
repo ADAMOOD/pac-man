@@ -1,15 +1,37 @@
 {
-    "files.associations": {
-        "universal.h": "c",
-        "menu.h": "c",
-        "drawing.h": "c",
-        "game.h": "c",
-        "map.h": "c",
-        "sdl_image.h": "c",
-        "string.h": "c",
-        "map": "c",
-        "array": "c",
-        "string": "c",
-        "string_view": "c"
-    }
+   "files.associations": {
+      "universal.h": "c",
+      "menu.h": "c",
+      "drawing.h": "c",
+      "game.h": "c",
+      "map.h": "c",
+      "sdl_image.h": "c",
+      "string.h": "c",
+      "map": "c",
+      "array": "c",
+      "string": "c",
+      "string_view": "c"
+   },
+   "editor.tokenColorCustomizations": {
+   "textMateRules": [
+      {
+         "scope": "constant.numeric.1",
+         "settings": {
+            "foreground": "#ff5555"
+         }
+      },
+      {
+         "scope": "constant.numeric.2",
+         "settings": {
+            "foreground": "#50fa7b"
+         }
+      },
+      {
+         "scope": "constant.numeric.3",
+         "settings": {
+            "foreground": "#bd93f9"
+         }
+      }
+   ]
+}
 }

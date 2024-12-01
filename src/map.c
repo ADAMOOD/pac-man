@@ -7,8 +7,9 @@ int MapShow(SDL_Renderer *renderer, Map m)
 
     // Load textures for horizontal and vertical walls
     SDL_Texture *horizontal = IMG_LoadTexture(renderer, "../assets/horizontal.png");
-    SDL_Texture *vertical = IMG_LoadTexture(renderer, "../assets/vertical.png");
     SDL_Texture *corner = IMG_LoadTexture(renderer, "../assets/leftUpCorner.png");
+    SDL_Texture *topPipe = IMG_LoadTexture(renderer, "../assets/toppipe.png");
+    SDL_Texture *endDown = IMG_LoadTexture(renderer, "../assets/endDown.png");
 
     if (mapIsInvalid(m))
     {
@@ -16,7 +17,7 @@ int MapShow(SDL_Renderer *renderer, Map m)
         return 1;
     }
 
-    if (horizontal == NULL || vertical == NULL)
+    if (horizontal == NULL || corner == NULL || topPipe == NULL || endDown == NULL)
     {
         SDL_Log("Failed to load texture: %s", IMG_GetError());
         return 1;
@@ -45,40 +46,84 @@ int MapShow(SDL_Renderer *renderer, Map m)
 
             switch (m.data[r][c])
             {
-            case '1':
-                SDL_RenderCopy(renderer, horizontal, NULL, &wall);
+            case '-':
+                        {
+                if (m.data[r][c+1] == ' ')
+                {
+                   SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
+                }
+                else if (m.data[r ][c- 1] == ' ')
+                {
+                    SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 90.0, NULL, SDL_FLIP_NONE);
+                }
+                else
+                {
+                     SDL_RenderCopy(renderer, horizontal, NULL, &wall);
+                }
                 break;
-            case '2':
-                SDL_RenderCopy(renderer, vertical, NULL, &wall);
+            }
+            case '|':
+            {
+                if (m.data[r + 1][c] == ' ')
+                {
+                    SDL_RenderCopy(renderer, endDown, NULL, &wall);
+                }
+                else if (m.data[r - 1][c] == ' ')
+                {
+                    SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
+                }
+                else
+                {
+                    SDL_RenderCopyEx(renderer, horizontal, NULL, &wall, 90.0, NULL, SDL_FLIP_NONE);
+                }
                 break;
-            case '3':
+            }
+            case '/':
             {
                 // top left (default)
-                if ((r + 1) < m.rows && m.data[r + 1][c] == '2' &&
-                    (c + 1) < m.cols && m.data[r][c + 1] == '1')
+                if ((r + 1) < m.rows && m.data[r + 1][c] == '|' &&
+                    (c + 1) < m.cols && m.data[r][c + 1] == '-')
                 {
                     SDL_RenderCopy(renderer, corner, NULL, &wall);
                 }
                 // right top
-                else if ((r + 1) < m.rows && m.data[r + 1][c] == '2' &&
-                         (c - 1) >= 0 && m.data[r][c - 1] == '1')
+                else if ((r + 1) < m.rows && m.data[r + 1][c] == '|' &&
+                         (c - 1) >= 0 && m.data[r][c - 1] == '-')
                 {
                     SDL_RenderCopyEx(renderer, corner, NULL, &wall, 90.0, NULL, SDL_FLIP_NONE);
                 }
                 // left lower
-                else if ((r - 1) >= 0 && m.data[r - 1][c] == '2' &&
-                         (c + 1) < m.cols && m.data[r][c + 1] == '1')
+                else if ((r - 1) >= 0 && m.data[r - 1][c] == '|' &&
+                         (c + 1) < m.cols && m.data[r][c + 1] == '-')
                 {
                     SDL_RenderCopyEx(renderer, corner, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
                 }
                 // right lower
-                else if ((r - 1) >= 0 && m.data[r - 1][c] == '2' &&
-                         (c - 1) >= 0 && m.data[r][c - 1] == '1')
+                else if ((r - 1) >= 0 && m.data[r - 1][c] == '|' &&
+                         (c - 1) >= 0 && m.data[r][c - 1] == '-')
                 {
                     SDL_RenderCopyEx(renderer, corner, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
                 }
+                else if ((r - 1) >= 0 && m.data[r - 1][c] == '/' &&
+                         (c + 1) < m.cols && m.data[r][c + 1] == '-') // case where there are two corners on top
+                {
+                    SDL_RenderCopyEx(renderer, corner, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
+                }
                 break;
             }
+            case 'T':
+                if ((r + 1) < m.rows && m.data[r + 1][c] == '|' && m.data[r][c + 1] == '-' && m.data[r][c - 1] == '-')
+                {
+                    SDL_RenderCopy(renderer, topPipe, NULL, &wall);
+                }else if((r - 1) > 0 && (r + 1)  < m.rows && m.data[r + 1][c] == '|' && m.data[r-1][c] == '|' && m.data[r][c + 1] == '-')
+                {
+                    SDL_RenderCopyEx(renderer, topPipe, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
+                }
+                else
+                {
+                    SDL_RenderCopyEx(renderer, topPipe, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
+                }
+                break;
             default:
                 break;
             }
@@ -92,9 +137,17 @@ int MapShow(SDL_Renderer *renderer, Map m)
     {
         SDL_DestroyTexture(horizontal);
     }
-    if (vertical != NULL)
+    if (corner != NULL)
     {
-        SDL_DestroyTexture(vertical);
+        SDL_DestroyTexture(corner);
+    }
+    if (topPipe != NULL)
+    {
+        SDL_DestroyTexture(topPipe);
+    }
+    if (endDown != NULL)
+    {
+        SDL_DestroyTexture(endDown);
     }
 
     return 0;
