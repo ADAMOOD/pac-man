@@ -33,22 +33,24 @@ int movePlayer(Player *player, Map *map) {
         newY++;
         break;
     default:
-        return 0; // No movement
+        return 0; // No movement if direction is invalid
     }
 
-    // Bound Check
-    if (newX < 0 || newX > map->cols || newY < 0 || newY > map->rows) {
-        return 0; // Nothing if outside
+    // Bound check to prevent out-of-bounds access
+    if (newX < 0 || newX >= map->cols || newY < 0 || newY >= map->rows) {
+        return 0; // No movement if outside bounds
     }
-    else if(map->data[newX][newY]==' ')
-    {
-        map->data[player->x][player->y]==' ';
-        map->data[newX][newY]=='p';
-        player->x=newX;
-        player->y=newY;
-        return 1;
+
+    // Check if the target cell is empty
+    if (map->data[newY][newX] == ' ') {  // Correct indexing (row-major order)
+        map->data[player->y][player->x] = ' '; // Clear current position
+        map->data[newY][newX] = 'p'; // Move player to new position
+        player->x = newX;
+        player->y = newY;
+        return 1; // Movement successful
     }
-    return 0; 
+
+    return 0; // Movement blocked by obstacle
 }
 
 int getPlayerLocation(Map map,int *x,int *y)
