@@ -10,6 +10,7 @@ int MapShow(SDL_Renderer *renderer, Map m)
     SDL_Texture *corner = IMG_LoadTexture(renderer, "../assets/leftUpCorner.png");
     SDL_Texture *topPipe = IMG_LoadTexture(renderer, "../assets/toppipe.png");
     SDL_Texture *endDown = IMG_LoadTexture(renderer, "../assets/endDown.png");
+    SDL_Texture *pacman = IMG_LoadTexture(renderer, "../assets/pacman.gif");
 
     if (mapIsInvalid(m))
     {
@@ -17,7 +18,7 @@ int MapShow(SDL_Renderer *renderer, Map m)
         return 1;
     }
 
-    if (horizontal == NULL || corner == NULL || topPipe == NULL || endDown == NULL)
+    if (horizontal == NULL || corner == NULL || topPipe == NULL || endDown == NULL || pacman == NULL)
     {
         SDL_Log("Failed to load texture: %s", IMG_GetError());
         return 1;
@@ -25,40 +26,40 @@ int MapShow(SDL_Renderer *renderer, Map m)
 
     int w, h;
     SDL_GetRendererOutputSize(renderer, &w, &h);
-    int wallPartSizeW = w / 100; // Wall part size based on window width
-    int wallPartSizeH = h / 100; // Wall part size based on window height
-    int margin = 10;             // Margin for positioning walls
+    
+    int wallPartSizeW = w / 30; // Wall part size based on window width
+    int wallPartSizeH = h / 30; // Wall part size based on window height
+    
+    // Calculate the offset to center the map
+    int marginX = (w - m.cols * wallPartSizeW) / 2;
+    int marginY = (h - m.rows * wallPartSizeH) / 2;
+
     SDL_Rect wall;
-    int offset = 100;
-    // 0 gap
-    // 1 vertical wal
-    // 2 horizontal wall
-    // 3 corner
+
     for (int r = 0; r < m.rows; r++)
     {
         for (int c = 0; c < m.cols; c++)
         {
             wall = (SDL_Rect){
-                margin + (c * wallPartSizeW),
-                margin + (r * wallPartSizeH),
+                marginX + (c * wallPartSizeW),
+                marginY + (r * wallPartSizeH),
                 wallPartSizeW,
                 wallPartSizeH};
-
             switch (m.data[r][c])
             {
             case '-':
-                        {
-                if (m.data[r][c+1] == ' ')
+            {
+                if (m.data[r][c + 1] == ' ')
                 {
-                   SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
                 }
-                else if (m.data[r ][c- 1] == ' ')
+                else if (m.data[r][c - 1] == ' ')
                 {
                     SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 90.0, NULL, SDL_FLIP_NONE);
                 }
                 else
                 {
-                     SDL_RenderCopy(renderer, horizontal, NULL, &wall);
+                    SDL_RenderCopy(renderer, horizontal, NULL, &wall);
                 }
                 break;
             }
@@ -115,7 +116,8 @@ int MapShow(SDL_Renderer *renderer, Map m)
                 if ((r + 1) < m.rows && m.data[r + 1][c] == '|' && m.data[r][c + 1] == '-' && m.data[r][c - 1] == '-')
                 {
                     SDL_RenderCopy(renderer, topPipe, NULL, &wall);
-                }else if((r - 1) > 0 && (r + 1)  < m.rows && m.data[r + 1][c] == '|' && m.data[r-1][c] == '|' && m.data[r][c + 1] == '-')
+                }
+                else if ((r - 1) > 0 && (r + 1) < m.rows && m.data[r + 1][c] == '|' && m.data[r - 1][c] == '|' && m.data[r][c + 1] == '-')
                 {
                     SDL_RenderCopyEx(renderer, topPipe, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
                 }
@@ -123,6 +125,9 @@ int MapShow(SDL_Renderer *renderer, Map m)
                 {
                     SDL_RenderCopyEx(renderer, topPipe, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
                 }
+                break;
+            case 'p':
+                SDL_RenderCopy(renderer, pacman, NULL, &wall);
                 break;
             default:
                 break;
@@ -149,9 +154,14 @@ int MapShow(SDL_Renderer *renderer, Map m)
     {
         SDL_DestroyTexture(endDown);
     }
+    if (pacman != NULL)
+    {
+        SDL_DestroyTexture(pacman);
+    }
 
     return 0;
 }
+
 void printMapInDetail(Map m)
 {
     if (mapIsInvalid(m))

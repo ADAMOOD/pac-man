@@ -1,6 +1,7 @@
 #include "game.h"
 #include "map.h"
-GameState GameTest(SDL_Renderer *renderer)
+#include "player.h"
+GameState GameTest(SDL_Renderer *renderer,double deltaTime)
 {
     int running = 1;
     SDL_Event event;
@@ -12,7 +13,14 @@ GameState GameTest(SDL_Renderer *renderer)
         SDL_Log("Error loading map");
         return -1;
     }
-    printMapInDetail(map);
+    // printMapInDetail(map);
+    Player player;
+    if (init_player(&player, map) == 1)
+    {
+        SDL_Log("Error initializing player");
+        return -1;
+    }
+    SDL_Log("x %d y %d",player.x,player.y);
     while (running)
     {
         // Zpracování událostí ve hře
@@ -27,8 +35,8 @@ GameState GameTest(SDL_Renderer *renderer)
             {
                 running = 0; // Get back to menu
             }
-
-            // game
+            
+            movePlayer(&player,&map);
         }
         if (MapShow(renderer, map) != 0)
         {

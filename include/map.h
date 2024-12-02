@@ -1,15 +1,6 @@
-#ifndef MAP_H
-#define MAP_h
+#pragma once
 #include "universal.h"
 #include <string.h>
-
-
-
-typedef enum
-{
-    MAPWALLH,
-    MAPWALLV,
-} MapStructures;
 
 typedef struct {
     char **data;
@@ -26,4 +17,3 @@ Map *initializeMap(int rows, int cols) ;
 void getDatafromFile(FILE *f, Map *m);
 int mapIsInvalid(Map map);
 void printMapInDetail(Map m);
-#endif

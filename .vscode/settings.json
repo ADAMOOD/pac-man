@@ -10,7 +10,8 @@
       "map": "c",
       "array": "c",
       "string": "c",
-      "string_view": "c"
+      "string_view": "c",
+      "player.h": "c"
    },
    "editor.tokenColorCustomizations": {
    "textMateRules": [

@@ -1,5 +1,4 @@
-#ifndef GHOST_H
-#define GHOST_H
+#pragma once
 
 #include <SDL2/SDL.h>
 
@@ -12,5 +11,3 @@ typedef struct {
 void init_ghost(Ghost *ghost, SDL_Renderer *renderer);
 //void update_ghost(Ghost *ghost, Player *player);
 void render_ghost(Ghost *ghost, SDL_Renderer *renderer);
-
-#endif

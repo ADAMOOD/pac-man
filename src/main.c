@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
         return 1;
     }
-    
+
     if (TTF_Init() == -1)
     {
         fprintf(stderr, "TTF_Init Error: %s\n", TTF_GetError());
@@ -58,8 +58,12 @@ int main(int argc, char *argv[])
     int selectedIndex = 0;
     int result = MENU_CONTINUE;
     GameState state = STATE_MENU;
+    Uint64 last = SDL_GetPerformanceCounter();
     while (running)
     {
+        Uint64 now = SDL_GetPerformanceCounter();
+        double deltaTime = (double)((now - last) / (double)SDL_GetPerformanceFrequency());
+        
         // Zpracování událostí
         while (SDL_PollEvent(&event))
         {
@@ -102,9 +106,10 @@ int main(int argc, char *argv[])
         }
         else if (state == STATE_GAME)
         {
-            state = GameTest(renderer); // Vykreslení herní obrazovky
+            state = GameTest(renderer,deltaTime); // Vykreslení herní obrazovky
         }
         SDL_RenderPresent(renderer); // Aktualizace obrazovky
+        last = now;
     }
 
     TTF_CloseFont(font);

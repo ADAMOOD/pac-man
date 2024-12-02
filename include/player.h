@@ -1,16 +1,13 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #include <SDL2/SDL.h>
+#include "map.h"
 
 typedef struct {
     int x, y;           
-    int direction;      
-    SDL_Texture *texture; 
+    Direction direction;      
 } Player;
 
-void init_player(Player *player, SDL_Renderer *renderer);
-void update_player(Player *player);
-void render_player(Player *player, SDL_Renderer *renderer);
-
-#endif
+int init_player(Player *player,Map map);
+int getPlayerLocation(Map map,int *x,int *y);
+int movePlayer(Player *player, Map *map);

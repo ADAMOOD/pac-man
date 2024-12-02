@@ -13,6 +13,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/kijonka/projekt/src/main.c" "CMakeFiles/pacman.dir/src/main.c.o" "gcc" "CMakeFiles/pacman.dir/src/main.c.o.d"
   "/home/kijonka/projekt/src/map.c" "CMakeFiles/pacman.dir/src/map.c.o" "gcc" "CMakeFiles/pacman.dir/src/map.c.o.d"
   "/home/kijonka/projekt/src/menu.c" "CMakeFiles/pacman.dir/src/menu.c.o" "gcc" "CMakeFiles/pacman.dir/src/menu.c.o.d"
+  "/home/kijonka/projekt/src/player.c" "CMakeFiles/pacman.dir/src/player.c.o" "gcc" "CMakeFiles/pacman.dir/src/player.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
