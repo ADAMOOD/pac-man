@@ -32,23 +32,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 FreeMap(&map);
                 return STATE_MENU;
             }
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_UP:
-                    player.direction = UP; // Nastavení směru na nahoru
-                    break;
-                case SDLK_DOWN:
-                    player.direction = DOWN; // Nastavení směru na dolů
-                    break;
-                case SDLK_LEFT:
-                    player.direction = LEFT; // Nastavení směru na doleva
-                    break;
-                case SDLK_RIGHT:
-                    player.direction = RIGHT; // Nastavení směru na doprava
-                    break;
-                default:
-                    break;
-                }
+               changeDirection(event.key.keysym.sym,&player,map);
             }
 
             // Aktualizace logiky hráče na základě deltaTime
