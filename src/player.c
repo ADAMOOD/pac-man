@@ -1,7 +1,8 @@
 #include "universal.h"
 #include "player.h"
+#include "map.h"
 
-int init_player(Player *player, Map map)
+int init_player(Player *player, SDL_Renderer *renderer, Map map)
 {
     player->direction = RIGHT;
     int x, y;
@@ -12,7 +13,48 @@ int init_player(Player *player, Map map)
     }
     player->x = x;
     player->y = y;
+    player->renderX = x;
+    player->renderY = y;
+
+    // Načtení textury hráče
+    player->texture = IMG_LoadTexture(renderer, "../assets/pacman.gif");
+    if (player->texture == NULL)
+    {
+        SDL_Log("Failed to load player texture: %s", IMG_GetError());
+        return 1;
+    }
     return 0;
+}
+void free_player(Player *player)
+{
+    if (player->texture != NULL)
+    {
+        SDL_DestroyTexture(player->texture);
+        player->texture = NULL;
+    }
+}
+
+void updatePlayerRenderPosition(Player *player, double deltaTime, double speed)
+{
+    double step = speed * deltaTime;
+
+    if (fabs(player->renderX - player->x) > step)
+    {
+        player->renderX += (player->x > player->renderX) ? step : -step;
+    }
+    else
+    {
+        player->renderX = player->x;
+    }
+
+    if (fabs(player->renderY - player->y) > step)
+    {
+        player->renderY += (player->y > player->renderY) ? step : -step;
+    }
+    else
+    {
+        player->renderY = player->y;
+    }
 }
 int movePlayer(Player *player, Map *map)
 {
@@ -55,6 +97,48 @@ int movePlayer(Player *player, Map *map)
 
     return 0; // Movement blocked by obstacle
 }
+void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
+{
+    int w, h;
+    SDL_GetRendererOutputSize(renderer, &w, &h);
+
+    int wallPartSizeW, wallPartSizeH, marginX, marginY;
+    getMapMesurements(m, w, h, &wallPartSizeW, &wallPartSizeH, &marginX, &marginY);
+
+    SDL_Rect playerRect = {
+        marginX + player->renderX * wallPartSizeW,
+        marginY + player->renderY * wallPartSizeH,
+        wallPartSizeW,
+        wallPartSizeH};
+
+    if (player->texture != NULL)
+    {
+        switch (player->direction)
+        {
+        case UP:
+            SDL_RenderCopyEx(renderer, player->texture, NULL, &playerRect, 270.0, NULL, SDL_FLIP_NONE);
+
+            break;
+        case DOWN:
+            SDL_RenderCopyEx(renderer, player->texture, NULL, &playerRect, 90.0, NULL, SDL_FLIP_NONE);
+            break;
+        case LEFT:
+            SDL_RenderCopyEx(renderer, player->texture, NULL, &playerRect, 180.0, NULL, SDL_FLIP_NONE);
+            break;
+        case RIGHT:
+            SDL_RenderCopy(renderer, player->texture, NULL, &playerRect);
+
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        SDL_Log("Player texture not set!");
+    }
+}
+
 void changeDirection(SDL_Keycode key, Player *player, Map map)
 {
     switch (key)
@@ -104,8 +188,8 @@ int getPlayerLocation(Map map, int *x, int *y)
         {
             if (map.data[i][j] == 'p')
             {
-                *x = i;
-                *y = j;
+                *x = j;
+                *y = i;
                 return 0;
             }
         }

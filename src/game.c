@@ -1,26 +1,32 @@
 #include "game.h"
 #include "map.h"
 #include "player.h"
+
+// Main game loop for testing game state
 GameState GameTest(SDL_Renderer *renderer, double deltaTime)
 {
     SDL_Event event;
     Map map;
+
+    // Load the map file
     if (GetMapFile(&map) != 0)
     {
         SDL_Log("Error loading map");
-        return -1;
+        return STATE_MENU;
     }
 
     Player player;
-    if (init_player(&player, map) == 1)
+
+    // Initialize player with its texture and initial position
+    if (init_player(&player, renderer, map) == 1)
     {
         SDL_Log("Error initializing player");
         FreeMap(&map);
-        return -1;
+        return STATE_MENU;
     }
 
-    const double playerSpeed = 5.0;
-    double timeAccumulator = 0.0;
+    const double playerSpeed = 12.0; // Speed of the player
+    double timeAccumulator = 0.0;    // Accumulator to manage fixed time steps for player updates
 
     while (1)
     {
@@ -32,30 +38,31 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 FreeMap(&map);
                 return STATE_MENU;
             }
-               changeDirection(event.key.keysym.sym,&player,map);
-            }
-
-            // Aktualizace logiky hráče na základě deltaTime
-            timeAccumulator += deltaTime;
-            while (timeAccumulator > 1.0 / playerSpeed)
-            {
-                movePlayer(&player, &map);
-                timeAccumulator -= 1.0 / playerSpeed;
-                SDL_Log("Player moved to x: %d, y: %d", player.x, player.y);
-            }
-
-            // Vykreslení mapy a hráče
-            if (MapShow(renderer, map) != 0)
-            {
-                FreeMap(&map);
-                SDL_Log("Rendering map error");
-                return STATE_MENU;
-            }
-
-            SDL_RenderPresent(renderer);
-            SDL_Delay(16); // Omezení na 60 FPS
+            changeDirection(event.key.keysym.sym, &player, map);
         }
 
-        FreeMap(&map);
-        return STATE_MENU;
+        // Update player logic
+        timeAccumulator += deltaTime;
+        while (timeAccumulator > 1.0 / playerSpeed)
+        {
+            movePlayer(&player, &map);
+            timeAccumulator -= 1.0 / playerSpeed;
+        }
+
+        // Interpolate player's position for smooth rendering
+        updatePlayerRenderPosition(&player, deltaTime, playerSpeed);
+
+        // **Rendering phase**
+        SDL_RenderClear(renderer);            // Clear the screen
+        MapShow(renderer, map);               // Render the map
+        renderPlayer(renderer, &player, map); // Render the player
+        SDL_RenderPresent(renderer);          // Present the new frame
+
+        SDL_Delay(16); // Limit the frame rate to approximately 60 FPS
     }
+
+    // Cleanup resources when exiting the loop
+    FreeMap(&map);
+    free_player(&player);
+    return STATE_MENU;
+}

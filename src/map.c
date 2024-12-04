@@ -10,7 +10,6 @@ int MapShow(SDL_Renderer *renderer, Map m)
     SDL_Texture *corner = IMG_LoadTexture(renderer, "../assets/leftUpCorner.png");
     SDL_Texture *topPipe = IMG_LoadTexture(renderer, "../assets/toppipe.png");
     SDL_Texture *endDown = IMG_LoadTexture(renderer, "../assets/endDown.png");
-    SDL_Texture *pacman = IMG_LoadTexture(renderer, "../assets/pacman.gif");
 
     if (mapIsInvalid(m))
     {
@@ -18,7 +17,7 @@ int MapShow(SDL_Renderer *renderer, Map m)
         return 1;
     }
 
-    if (horizontal == NULL || corner == NULL || topPipe == NULL || endDown == NULL || pacman == NULL)
+    if (horizontal == NULL || corner == NULL || topPipe == NULL || endDown == NULL )
     {
         SDL_Log("Failed to load texture: %s", IMG_GetError());
         return 1;
@@ -27,12 +26,10 @@ int MapShow(SDL_Renderer *renderer, Map m)
     int w, h;
     SDL_GetRendererOutputSize(renderer, &w, &h);
     
-    int wallPartSizeW = w / 30; // Wall part size based on window width
-    int wallPartSizeH = h / 30; // Wall part size based on window height
+    int wallPartSizeW,wallPartSizeH,marginX, marginY ;
+    getMapMesurements(m,w,h,&wallPartSizeW,&wallPartSizeH,&marginX,&marginY);
     
-    // Calculate the offset to center the map
-    int marginX = (w - m.cols * wallPartSizeW) / 2;
-    int marginY = (h - m.rows * wallPartSizeH) / 2;
+
 
     SDL_Rect wall;
 
@@ -126,9 +123,6 @@ int MapShow(SDL_Renderer *renderer, Map m)
                     SDL_RenderCopyEx(renderer, topPipe, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
                 }
                 break;
-            case 'p':
-                SDL_RenderCopy(renderer, pacman, NULL, &wall);
-                break;
             default:
                 break;
             }
@@ -154,12 +148,25 @@ int MapShow(SDL_Renderer *renderer, Map m)
     {
         SDL_DestroyTexture(endDown);
     }
-    if (pacman != NULL)
-    {
-        SDL_DestroyTexture(pacman);
-    }
 
     return 0;
+}
+
+void getMapMesurements(Map map, int w, int h, int *wallPartSizeW, int *wallPartSizeH, int *marginX, int *marginY)
+{
+    // Propočítání velikostí dílů podle poměru obrazovky a mapy
+    int partWidth = w / map.cols;
+    int partHeight = h / map.rows;
+
+    // Vyber menší velikost, aby se mapa vešla celá na obrazovku
+    int minPartSize = (partWidth < partHeight) ? partWidth : partHeight;
+
+    *wallPartSizeW = minPartSize;
+    *wallPartSizeH = minPartSize;
+
+    // Výpočet okrajů pro centrování mapy na obrazovce
+    *marginX = (w - (map.cols * minPartSize)) / 2;
+    *marginY = (h - (map.rows * minPartSize)) / 2;
 }
 
 void printMapInDetail(Map m)
@@ -294,6 +301,7 @@ void FreeMap(Map *map)
     map->data = NULL;
     map->rows = 0;
     map->cols = 0;
+    map = NULL;
 }
 int getFileRowsAndCols(FILE *file, int *cols, int *rows)
 {

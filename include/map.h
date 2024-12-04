@@ -8,6 +8,8 @@ typedef struct {
     int cols;
 } Map;
 
+
+
 #define MAP_PATH "../assets/map.txt"
 int MapShow(SDL_Renderer *renderer, Map m);
 int GetMapFile(Map *map);
@@ -17,3 +19,4 @@ Map *initializeMap(int rows, int cols) ;
 void getDatafromFile(FILE *f, Map *m);
 int mapIsInvalid(Map map);
 void printMapInDetail(Map m);
+void getMapMesurements(Map map,int w,int h, int *wallPartSizeW,int *wallPartSizeH,int *marginX,int *marginY);
