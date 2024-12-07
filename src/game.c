@@ -14,7 +14,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         SDL_Log("Error loading map");
         return STATE_MENU;
     }
-
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     Player player;
 
     // Initialize player with its texture and initial position
@@ -24,8 +24,6 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         FreeMap(&map);
         return STATE_MENU;
     }
-
-    const double playerSpeed = 12.0; // Speed of the player
     double timeAccumulator = 0.0;    // Accumulator to manage fixed time steps for player updates
 
     while (1)
@@ -40,18 +38,15 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             }
             changeDirection(event.key.keysym.sym, &player, map);
         }
-
         // Update player logic
         timeAccumulator += deltaTime;
-        while (timeAccumulator > 1.0 / playerSpeed)
+        while (timeAccumulator > 1.0 / player.speed)
         {
             movePlayer(&player, &map);
-            timeAccumulator -= 1.0 / playerSpeed;
+            timeAccumulator -= 1.0 / player.speed;
         }
-
         // Interpolate player's position for smooth rendering
-        updatePlayerRenderPosition(&player, deltaTime, playerSpeed);
-
+        updatePlayerRenderPosition(&player, deltaTime);//muj player pri teto interpolaci blika asi je  to tim zpozdenim 16 jak to zpravit?
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
         MapShow(renderer, map);               // Render the map

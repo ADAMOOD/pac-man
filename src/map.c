@@ -1,4 +1,5 @@
 #include "map.h"
+#include "drawing.h"
 
 int MapShow(SDL_Renderer *renderer, Map m)
 {
@@ -17,7 +18,7 @@ int MapShow(SDL_Renderer *renderer, Map m)
         return 1;
     }
 
-    if (horizontal == NULL || corner == NULL || topPipe == NULL || endDown == NULL )
+    if (horizontal == NULL || corner == NULL || topPipe == NULL || endDown == NULL)
     {
         SDL_Log("Failed to load texture: %s", IMG_GetError());
         return 1;
@@ -25,11 +26,9 @@ int MapShow(SDL_Renderer *renderer, Map m)
 
     int w, h;
     SDL_GetRendererOutputSize(renderer, &w, &h);
-    
-    int wallPartSizeW,wallPartSizeH,marginX, marginY ;
-    getMapMesurements(m,w,h,&wallPartSizeW,&wallPartSizeH,&marginX,&marginY);
-    
 
+    int wallPartSizeW, wallPartSizeH, marginX, marginY;
+    getMapMesurements(m, w, h, &wallPartSizeW, &wallPartSizeH, &marginX, &marginY);
 
     SDL_Rect wall;
 
@@ -46,11 +45,11 @@ int MapShow(SDL_Renderer *renderer, Map m)
             {
             case '-':
             {
-                if (m.data[r][c + 1] == ' ')
+                if (m.data[r][c + 1] == ' ' || m.data[r][c + 1] == 'p' || m.data[r][c + 1] == '.')
                 {
                     SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 270.0, NULL, SDL_FLIP_NONE);
                 }
-                else if (m.data[r][c - 1] == ' ')
+                else if (m.data[r][c - 1] == ' ' || m.data[r][c - 1] == 'p' || m.data[r][c - 1] == '.')
                 {
                     SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 90.0, NULL, SDL_FLIP_NONE);
                 }
@@ -62,11 +61,11 @@ int MapShow(SDL_Renderer *renderer, Map m)
             }
             case '|':
             {
-                if (m.data[r + 1][c] == ' ')
+                if (m.data[r + 1][c] == ' ' || m.data[r + 1][c] == 'p' || m.data[r + 1][c] == '.')
                 {
                     SDL_RenderCopy(renderer, endDown, NULL, &wall);
                 }
-                else if (m.data[r - 1][c] == ' ')
+                else if (m.data[r - 1][c] == ' ' || m.data[r - 1][c] == 'p' || m.data[r - 1][c] == '.')
                 {
                     SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
                 }
@@ -123,8 +122,20 @@ int MapShow(SDL_Renderer *renderer, Map m)
                     SDL_RenderCopyEx(renderer, topPipe, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
                 }
                 break;
-            default:
+            case ' ':
+            {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White color for dots
+
+                // Calculate the center of the cell and radius of the dot
+                int radius = wallPartSizeW < wallPartSizeH ? wallPartSizeW / 8 : wallPartSizeH / 8; // Adjust radius
+                int centerX = marginX + (c * wallPartSizeW) + (wallPartSizeW / 2);
+                int centerY = marginY + (r * wallPartSizeH) + (wallPartSizeH / 2);
+
+                RenderFilledCircle(renderer, centerX, centerY, radius);
                 break;
+            }
+
+            break;
             }
         }
     }
@@ -203,7 +214,7 @@ int GetMapFile(Map *map)
         fclose(mapFile);
         return -1;
     }
-    *map = *initializeMap(rows, cols);
+    *map = *allocateMap(rows, cols);
     getDatafromFile(mapFile, map);
     fclose(mapFile);
     return 0;
@@ -245,7 +256,7 @@ void getDatafromFile(FILE *f, Map *m)
     }
 }
 
-Map *initializeMap(int rows, int cols)
+Map *allocateMap(int rows, int cols)
 {
     // Allocate memory for the Map struct
     Map *map = (Map *)malloc(sizeof(Map));

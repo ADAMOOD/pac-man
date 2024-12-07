@@ -691,6 +691,7 @@ CMakeFiles/pacman.dir/src/main.c.o: /home/kijonka/projekt/src/main.c \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/xtestintrin.h
 
 CMakeFiles/pacman.dir/src/map.c.o: /home/kijonka/projekt/src/map.c \
+  /home/kijonka/projekt/include/drawing.h \
   /home/kijonka/projekt/include/map.h \
   /home/kijonka/projekt/include/universal.h \
   /usr/include/SDL2/SDL.h \

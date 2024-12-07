@@ -6,5 +6,5 @@
 #define FLARGE 60
 
 void sdl_draw_text(SDL_Renderer* renderer, TTF_Font* font, SDL_Color color, SDL_Rect location, const char* text);
-
+void RenderFilledCircle(SDL_Renderer *renderer, int x, int y, int radius);
 

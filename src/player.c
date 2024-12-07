@@ -15,14 +15,23 @@ int init_player(Player *player, SDL_Renderer *renderer, Map map)
     player->y = y;
     player->renderX = x;
     player->renderY = y;
+    player->speed = 10.0;
 
     // Načtení textury hráče
-    player->texture = IMG_LoadTexture(renderer, "../assets/pacman.gif");
+    player->texture = IMG_LoadTexture(renderer, "../assets/Pac-ManSpriteSheet.png");
     if (player->texture == NULL)
     {
         SDL_Log("Failed to load player texture: %s", IMG_GetError());
         return 1;
     }
+
+    player->currentFrame = 0;
+    player->frameTime = 0.1;
+    player->timeAccumulator = 0.0;
+    player->frameWidth = 32;  // Předpokládaná šířka jednoho frame
+    player->frameHeight = 32; // Předpokládaná výška jednoho frame
+    player->totalFrames = 3;  // Počet rámů animace (například otevření a zavření pusy)
+
     return 0;
 }
 void free_player(Player *player)
@@ -33,10 +42,19 @@ void free_player(Player *player)
         player->texture = NULL;
     }
 }
-
-void updatePlayerRenderPosition(Player *player, double deltaTime, double speed)
+void updatePlayerAnim(Player *player, double deltaTime)
 {
-    double step = speed * deltaTime;
+    player->timeAccumulator += deltaTime;
+    if (player->timeAccumulator >= player->frameTime) {
+        // Přepnutí na další snímek animace
+        player->currentFrame = (player->currentFrame + 1) % player->totalFrames;
+        player->timeAccumulator -= player->frameTime;
+    }
+}
+
+void updatePlayerRenderPosition(Player *player, double deltaTime)
+{
+    double step =player->speed * deltaTime;
 
     if (fabs(player->renderX - player->x) > step)
     {
@@ -86,9 +104,9 @@ int movePlayer(Player *player, Map *map)
     }
 
     // Check if the target cell is empty
-    if (map->data[newY][newX] == ' ')
+    if (map->data[newY][newX] == ' '||map->data[newY][newX] == '.')
     {                                          // Correct indexing (row-major order)
-        map->data[player->y][player->x] = ' '; // Clear current position
+        map->data[player->y][player->x] = '.'; // Clear current position
         map->data[newY][newX] = 'p';           // Move player to new position
         player->x = newX;
         player->y = newY;
@@ -105,33 +123,49 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
     int wallPartSizeW, wallPartSizeH, marginX, marginY;
     getMapMesurements(m, w, h, &wallPartSizeW, &wallPartSizeH, &marginX, &marginY);
 
+    // Pozice na obrazovce
     SDL_Rect playerRect = {
         marginX + player->renderX * wallPartSizeW,
         marginY + player->renderY * wallPartSizeH,
         wallPartSizeW,
-        wallPartSizeH};
+        wallPartSizeH
+    };
 
     if (player->texture != NULL)
     {
+        // Určení, který rám použít na základě směru a aktuální animace
+        SDL_Rect srcRect = {
+            player->currentFrame * player->frameWidth, // X pozice snímku v sprite sheetu
+            0,                                         // Předpokládáme, že všechny snímky jsou v jedné řadě
+            player->frameWidth,                        // Šířka jednoho snímku
+            player->frameHeight                        // Výška jednoho snímku
+        };
+
+        // Rotace podle směru pohybu
+        double angle = 0.0;
+        SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+        // Určení rotace podle směru
         switch (player->direction)
         {
         case UP:
-            SDL_RenderCopyEx(renderer, player->texture, NULL, &playerRect, 270.0, NULL, SDL_FLIP_NONE);
-
+            angle = 270.0;
             break;
         case DOWN:
-            SDL_RenderCopyEx(renderer, player->texture, NULL, &playerRect, 90.0, NULL, SDL_FLIP_NONE);
+            angle = 90.0;
             break;
         case LEFT:
-            SDL_RenderCopyEx(renderer, player->texture, NULL, &playerRect, 180.0, NULL, SDL_FLIP_NONE);
+            angle = 180.0;
             break;
         case RIGHT:
-            SDL_RenderCopy(renderer, player->texture, NULL, &playerRect);
-
+            angle = 0.0;
             break;
         default:
             break;
         }
+
+        // Vykreslení Pac-Mana
+        SDL_RenderCopyEx(renderer, player->texture, &srcRect, &playerRect, angle, NULL, flip);
     }
     else
     {
@@ -139,13 +173,14 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
     }
 }
 
+
 void changeDirection(SDL_Keycode key, Player *player, Map map)
 {
     switch (key)
     {
     case SDLK_UP:
     {
-        if (player->y - 1 >= 0 && map.data[player->y - 1][player->x] == ' ')
+        if (player->y - 1 >= 0 && map.data[player->y - 1][player->x] == ' '||map.data[player->y - 1][player->x] == '.')
         {
             player->direction = UP;
         }
@@ -153,7 +188,7 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_DOWN:
     {
-        if (player->y + 1 < map.rows && map.data[player->y + 1][player->x] == ' ')
+        if (player->y + 1 < map.rows && map.data[player->y + 1][player->x] == ' '||map.data[player->y + 1][player->x] == '.')
         {
             player->direction = DOWN;
         }
@@ -161,7 +196,7 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_LEFT:
     {
-        if (player->x - 1 >= 0 && map.data[player->y][player->x - 1] == ' ')
+        if (player->x - 1 >= 0 && map.data[player->y][player->x - 1] == ' '||map.data[player->y][player->x - 1] == '.')
         {
             player->direction = LEFT;
         }
@@ -169,7 +204,7 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_RIGHT:
     {
-        if (player->x + 1 < map.cols && map.data[player->y][player->x + 1] == ' ')
+        if (player->x + 1 < map.cols && map.data[player->y][player->x + 1] == ' '||map.data[player->y][player->x + 1] == '.')
         {
             player->direction = RIGHT;
         }
