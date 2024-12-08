@@ -214,7 +214,7 @@ int GetMapFile(Map *map)
         fclose(mapFile);
         return -1;
     }
-    *map = *allocateMap(rows, cols);
+    *map = allocateMap(rows, cols);
     getDatafromFile(mapFile, map);
     fclose(mapFile);
     return 0;
@@ -256,40 +256,33 @@ void getDatafromFile(FILE *f, Map *m)
     }
 }
 
-Map *allocateMap(int rows, int cols)
+Map allocateMap(int rows, int cols)
 {
-    // Allocate memory for the Map struct
-    Map *map = (Map *)malloc(sizeof(Map));
-    if (map == NULL)
-    {
-        SDL_Log("Failed to allocate memory for Map");
-        return NULL;
-    }
-    map->rows = rows;
-    map->cols = cols;
+    Map map;
+    map.rows = rows;
+    map.cols = cols;
+
     // Allocate memory for the data array (array of char pointers)
-    map->data = (char **)malloc(rows * sizeof(char *));
-    if (map->data == NULL)
+    map.data = (char **)malloc(rows * sizeof(char *));
+    if (map.data == NULL)
     {
         SDL_Log("Failed to allocate memory for data");
-        free(map); // Free previously allocated memory
-        return NULL;
+        free(map.data); // Free previously allocated memory
+        return map;
     }
-
     // Allocate memory for each row in the data array
     for (int i = 0; i < rows; i++)
     {
-        map->data[i] = (char *)malloc(cols * sizeof(char));
-        if (map->data[i] == NULL)
+        map.data[i] = (char *)malloc(cols * sizeof(char));
+        if (map.data[i] == NULL)
         {
             SDL_Log("Failed to allocate memory for a row");
             for (int j = 0; j < i; j++)
             {
-                free(map->data[j]);
+                free(map.data[j]);
             }
-            free(map->data);
-            free(map);
-            return NULL;
+            free(map.data);
+            SDL_Log("failed to allocate %d. row",i);
         }
     }
     return map;
