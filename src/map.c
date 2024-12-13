@@ -139,9 +139,6 @@ int renderMap(SDL_Renderer *renderer, Map m)
             }
         }
     }
-
-    //SDL_RenderPresent(renderer); // Update the screen with rendered walls
-
     // Clean up textures after rendering
     if (horizontal != NULL)
     {

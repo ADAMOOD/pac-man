@@ -20,6 +20,7 @@ set(SOURCES
     src/map.c
     src/game.c
     src/player.c
+    src/uiInfo.c
 )
 
 add_executable(pacman ${SOURCES})

@@ -1,18 +1,13 @@
 #include "game.h"
 #include "map.h"
 #include "player.h"
+#include "uiInfo.h"
 
 // Main game loop for testing game state
 GameState GameTest(SDL_Renderer *renderer, double deltaTime)
 {
     SDL_Event event;
     Map map;
-    TTF_Font *font = TTF_OpenFont("PacFont.ttf", FBIG);
-    if (!font)
-    {
-        SDL_Log("Error loading large font: %s", TTF_GetError());
-        return STATE_MENU;
-    }
 
     // Load the map file
     if (GetMapFile(&map) != 0)
@@ -27,26 +22,10 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     if (init_player(&player, renderer, map) == 1)
     {
         SDL_Log("Error initializing player");
-        TTF_CloseFont(font);
         FreeMap(&map);
         return STATE_MENU;
     }
     double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
-
-
-   /* int textWidth, textHeight;
-    TTF_SizeText(currentFont, menu_items[i], &textWidth, &textHeight);
-    int w, h;
-        SDL_GetRendererOutputSize(renderer, &w, &h);
-
-        SDL_Rect location = {
-            (w - textWidth) / 2,
-            (h / 3) + i * (textHeight + 20),
-            textWidth,
-            textHeight
-        };
-        
-        sdl_draw_text(renderer, currentFont, currentColor, location, menu_items[i]);*/
 
     while (1)
     {
@@ -58,7 +37,6 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 // Cleanup resources when exiting the loop
                 FreeMap(&map);
                 free_player(&player);
-                TTF_CloseFont(font);
                 return STATE_MENU;
             }
             changeDirection(event.key.keysym.sym, &player, map);
@@ -74,15 +52,15 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         updatePlayerRenderPosition(&player, deltaTime);
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
-        renderMap(renderer, map);               // Render the map
+        renderMap(renderer, map);             // Render the map
         renderPlayer(renderer, &player, map); // Render the player
-        
+        renderUI(player,map,renderer);
+
         SDL_RenderPresent(renderer); // Present the new frame
-        SDL_Delay(16); // Limit the frame rate to approximately 60 FPS
+        SDL_Delay(16);               // Limit the frame rate to approximately 60 FPS
     }
     // Cleanup resources when exiting the loop
     FreeMap(&map);
     free_player(&player);
-    TTF_CloseFont(font);
     return STATE_MENU;
 }

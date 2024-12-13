@@ -273,6 +273,30 @@ src/player.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/player.c.s
 .PHONY : src/player.c.s
 
+src/uiInfo.o: src/uiInfo.c.o
+.PHONY : src/uiInfo.o
+
+# target to build an object file
+src/uiInfo.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/uiInfo.c.o
+.PHONY : src/uiInfo.c.o
+
+src/uiInfo.i: src/uiInfo.c.i
+.PHONY : src/uiInfo.i
+
+# target to preprocess a source file
+src/uiInfo.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/uiInfo.c.i
+.PHONY : src/uiInfo.c.i
+
+src/uiInfo.s: src/uiInfo.c.s
+.PHONY : src/uiInfo.s
+
+# target to generate assembly for a file
+src/uiInfo.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/uiInfo.c.s
+.PHONY : src/uiInfo.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -300,6 +324,9 @@ help:
 	@echo "... src/player.o"
 	@echo "... src/player.i"
 	@echo "... src/player.s"
+	@echo "... src/uiInfo.o"
+	@echo "... src/uiInfo.i"
+	@echo "... src/uiInfo.s"
 .PHONY : help
 
 

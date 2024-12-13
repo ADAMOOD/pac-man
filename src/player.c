@@ -1,4 +1,3 @@
-#include "universal.h"
 #include "player.h"
 #include "map.h"
 
