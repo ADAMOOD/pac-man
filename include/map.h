@@ -8,6 +8,8 @@ typedef struct {
     int cols;
 } Map;
 
+#define SMALLPEARL 10;
+#define BIGPEARL 50;
 
 
 #define MAP_PATH "../assets/map.txt"

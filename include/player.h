@@ -14,7 +14,7 @@ typedef struct {
     double timeAccumulator;      // Akumulátor času pro animaci
     int frameWidth, frameHeight; // Rozměry jednoho frame
     int totalFrames;             // Počet celkových snímků animace
-
+    int score;
 } Player;
 
 int init_player(Player *player, SDL_Renderer *renderer, Map map);

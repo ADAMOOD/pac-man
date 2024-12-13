@@ -31,6 +31,7 @@ int init_player(Player *player, SDL_Renderer *renderer, Map map)
     player->frameWidth = 32;  // Předpokládaná šířka jednoho frame
     player->frameHeight = 32; // Předpokládaná výška jednoho frame
     player->totalFrames = 3;  // Počet rámů animace (například otevření a zavření pusy)
+    player->score = 0;
 
     return 0;
 }
@@ -45,7 +46,8 @@ void free_player(Player *player)
 void updatePlayerAnim(Player *player, double deltaTime)
 {
     player->timeAccumulator += deltaTime;
-    if (player->timeAccumulator >= player->frameTime) {
+    if (player->timeAccumulator >= player->frameTime)
+    {
         // Přepnutí na další snímek animace
         player->currentFrame = (player->currentFrame + 1) % player->totalFrames;
         player->timeAccumulator -= player->frameTime;
@@ -54,7 +56,7 @@ void updatePlayerAnim(Player *player, double deltaTime)
 
 void updatePlayerRenderPosition(Player *player, double deltaTime)
 {
-    double step =player->speed * deltaTime;
+    double step = player->speed * deltaTime;
 
     if (fabs(player->renderX - player->x) > step)
     {
@@ -104,12 +106,18 @@ int movePlayer(Player *player, Map *map)
     }
 
     // Check if the target cell is empty
-    if (map->data[newY][newX] == ' '||map->data[newY][newX] == '.')
-    {                                          // Correct indexing (row-major order)
+    if (map->data[newY][newX] == ' ' || map->data[newY][newX] == '.')
+    {
+        if (map->data[newY][newX] == ' ') // increessing the ponts
+        {
+            player->score += SMALLPEARL;
+            SDL_Log("%d", player->score);
+        }
         map->data[player->y][player->x] = '.'; // Clear current position
         map->data[newY][newX] = 'p';           // Move player to new position
         player->x = newX;
         player->y = newY;
+
         return 1; // Movement successful
     }
 
@@ -128,8 +136,7 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
         marginX + player->renderX * wallPartSizeW,
         marginY + player->renderY * wallPartSizeH,
         wallPartSizeW,
-        wallPartSizeH
-    };
+        wallPartSizeH};
 
     if (player->texture != NULL)
     {
@@ -173,14 +180,13 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
     }
 }
 
-
 void changeDirection(SDL_Keycode key, Player *player, Map map)
 {
     switch (key)
     {
     case SDLK_UP:
     {
-        if (player->y - 1 >= 0 && map.data[player->y - 1][player->x] == ' '||map.data[player->y - 1][player->x] == '.')
+        if (player->y - 1 >= 0 && map.data[player->y - 1][player->x] == ' ' || map.data[player->y - 1][player->x] == '.')
         {
             player->direction = UP;
         }
@@ -188,7 +194,7 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_DOWN:
     {
-        if (player->y + 1 < map.rows && map.data[player->y + 1][player->x] == ' '||map.data[player->y + 1][player->x] == '.')
+        if (player->y + 1 < map.rows && map.data[player->y + 1][player->x] == ' ' || map.data[player->y + 1][player->x] == '.')
         {
             player->direction = DOWN;
         }
@@ -196,7 +202,7 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_LEFT:
     {
-        if (player->x - 1 >= 0 && map.data[player->y][player->x - 1] == ' '||map.data[player->y][player->x - 1] == '.')
+        if (player->x - 1 >= 0 && map.data[player->y][player->x - 1] == ' ' || map.data[player->y][player->x - 1] == '.')
         {
             player->direction = LEFT;
         }
@@ -204,7 +210,7 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_RIGHT:
     {
-        if (player->x + 1 < map.cols && map.data[player->y][player->x + 1] == ' '||map.data[player->y][player->x + 1] == '.')
+        if (player->x + 1 < map.cols && map.data[player->y][player->x + 1] == ' ' || map.data[player->y][player->x + 1] == '.')
         {
             player->direction = RIGHT;
         }

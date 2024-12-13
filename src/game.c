@@ -7,6 +7,12 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
 {
     SDL_Event event;
     Map map;
+    TTF_Font *font = TTF_OpenFont("PacFont.ttf", FBIG);
+    if (!font)
+    {
+        SDL_Log("Error loading large font: %s", TTF_GetError());
+        return STATE_MENU;
+    }
 
     // Load the map file
     if (GetMapFile(&map) != 0)
@@ -21,10 +27,11 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     if (init_player(&player, renderer, map) == 1)
     {
         SDL_Log("Error initializing player");
+        TTF_CloseFont(font);
         FreeMap(&map);
         return STATE_MENU;
     }
-    double timeAccumulator = 0.0;    // Accumulator to manage fixed time steps for player updates
+    double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
 
     while (1)
     {
@@ -33,7 +40,10 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             if (event.type == SDL_QUIT ||
                 (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
             {
+                // Cleanup resources when exiting the loop
                 FreeMap(&map);
+                free_player(&player);
+                TTF_CloseFont(font);
                 return STATE_MENU;
             }
             changeDirection(event.key.keysym.sym, &player, map);
@@ -46,12 +56,13 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             timeAccumulator -= 1.0 / player.speed;
         }
         // Interpolate player's position for smooth rendering
-        updatePlayerRenderPosition(&player, deltaTime);//muj player pri teto interpolaci blika asi je  to tim zpozdenim 16 jak to zpravit?
+        updatePlayerRenderPosition(&player, deltaTime);
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
         MapShow(renderer, map);               // Render the map
         renderPlayer(renderer, &player, map); // Render the player
-        SDL_RenderPresent(renderer);          // Present the new frame
+
+        SDL_RenderPresent(renderer); // Present the new frame
 
         SDL_Delay(16); // Limit the frame rate to approximately 60 FPS
     }
@@ -59,5 +70,6 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     // Cleanup resources when exiting the loop
     FreeMap(&map);
     free_player(&player);
+    TTF_CloseFont(font);
     return STATE_MENU;
 }
