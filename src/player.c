@@ -5,7 +5,7 @@ int init_player(Player *player, SDL_Renderer *renderer, Map map)
 {
     player->direction = RIGHT;
     int x, y;
-    if (getPlayerLocation(map, &x, &y) == 1)
+    if (fingOnMap(map, 'p', &x, &y) == 1)
     {
         SDL_Log("Player not found");
         return 1;
@@ -53,7 +53,7 @@ void updatePlayerAnim(Player *player, double deltaTime)
     }
 }
 
-void updatePlayerRenderPosition(Player *player, double deltaTime)
+void updatePlayerRenderPosition(Player *player, double deltaTime) // interpolation
 {
     double step = player->speed * deltaTime;
 
@@ -80,6 +80,7 @@ int movePlayer(Player *player, Map *map)
     int newX = player->x;
     int newY = player->y;
 
+    // Předpovědění nové pozice na základě směru
     switch (player->direction)
     {
     case LEFT:
@@ -95,32 +96,68 @@ int movePlayer(Player *player, Map *map)
         newY++;
         break;
     default:
-        return 0; // No movement if direction is invalid
+        return 0; // Žádný pohyb, pokud je směr neplatný
     }
 
-    // Bound check to prevent out-of-bounds access
+    // Kontrola, jestli je nová pozice v rámci mapy
     if (newX < 0 || newX >= map->cols || newY < 0 || newY >= map->rows)
     {
-        return 0; // No movement if outside bounds
+        return 0; // Žádný pohyb mimo hranice
     }
 
-    // Check if the target cell is empty
-    if (map->data[newY][newX] == ' ' || map->data[newY][newX] == '.')
+    char cell = map->data[newY][newX];
+    if (cell == ' ' || cell == '.' || cell == 'o' || cell == '1' || cell == '0')
     {
-        if (map->data[newY][newX] == ' ') // increessing the ponts
+        if (cell == '1') // Pokud narazíme na teleport
+        {
+            int x, y;
+            if (fingOnMap(*map, '0', &x, &y) == 0) // Najít teleportní cíl
+            {
+                map->data[player->y][player->x] = '1'; // Vymazání staré pozice hráče
+                SDL_Log("Teleporting player to %d, %d", x, y);
+                player->x = x;
+                player->y = y;
+                player->renderX = x;
+                player->renderY = y;
+                return 1; // Teleportace
+            }
+            return 0;
+        }
+        if (cell == '0') // Pokud narazíme na teleport
+        {
+            int x, y;
+            if (fingOnMap(*map, '1', &x, &y) == 1) // Najít teleportní cíl
+            {
+                map->data[player->y][player->x] = '0'; // Vymazání staré pozice hráče
+                SDL_Log("Teleporting player to %d, %d", x, y);
+                player->x = x;
+                player->y = y;
+                player->renderX = x;
+                player->renderY = y;
+                return 1; // Teleportace
+            }
+            return 0;
+        }
+
+        if (cell == 'o') // Zvýšení skóre pro velkou perličku
+        {
+            player->score += BIGPEARL;
+        }
+
+        if (cell == ' ') // Zvýšení skóre pro malou perličku
         {
             player->score += SMALLPEARL;
-            SDL_Log("%d", player->score);
         }
-        map->data[player->y][player->x] = '.'; // Clear current position
-        map->data[newY][newX] = 'p';           // Move player to new position
+
+        map->data[player->y][player->x] = '.'; // Vymazání staré pozice hráče
+        map->data[newY][newX] = 'p';           // Nová pozice hráče
         player->x = newX;
         player->y = newY;
 
-        return 1; // Movement successful
+        return 1; // Pohyb úspěšný
     }
 
-    return 0; // Movement blocked by obstacle
+    return 0; // Pohyb zablokován překážkou
 }
 void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
 {

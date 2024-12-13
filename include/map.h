@@ -6,6 +6,7 @@ typedef struct {
     char **data;
     int rows;
     int cols;
+    int tele1[2],tele0[2];
 } Map;
 
 #define SMALLPEARL 10;
@@ -22,3 +23,4 @@ void getDatafromFile(FILE *f, Map *m);
 int mapIsInvalid(Map map);
 void printMapInDetail(Map m);
 void getMapMesurements(Map map,int w,int h, int *wallPartSizeW,int *wallPartSizeH,int *marginX,int *marginY);
+int fingOnMap(Map map,char c, int *x, int *y);

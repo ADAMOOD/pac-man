@@ -26,9 +26,10 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         return STATE_MENU;
     }
     double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
-
+    int x,y;
     while (1)
     {
+        SDL_Log("0 nalezena %d",fingOnMap(map,'0',&x,&y));//funkce vraci 0 pokud se '0' najde. dokud se neteleportuje tak '0' ale jakmile se teleportuje tak ji jakoby prepise a uz tam neni
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT ||

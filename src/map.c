@@ -61,11 +61,11 @@ int renderMap(SDL_Renderer *renderer, Map m)
             }
             case '|':
             {
-                if (m.data[r + 1][c] == ' ' || m.data[r + 1][c] == 'p' || m.data[r + 1][c] == '.')
+                if (m.data[r + 1][c] == ' ' || m.data[r + 1][c] == 'p' || m.data[r + 1][c] == '.'|| m.data[r + 1][c] == '1'|| m.data[r + 1][c] == '0')
                 {
                     SDL_RenderCopy(renderer, endDown, NULL, &wall);
                 }
-                else if (m.data[r - 1][c] == ' ' || m.data[r - 1][c] == 'p' || m.data[r - 1][c] == '.')
+                else if (m.data[r - 1][c] == ' ' || m.data[r - 1][c] == 'p' || m.data[r - 1][c] == '.'|| m.data[r - 1][c] == '1'|| m.data[r - 1][c] == '0')
                 {
                     SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
                 }
@@ -124,10 +124,20 @@ int renderMap(SDL_Renderer *renderer, Map m)
                 break;
             case ' ':
             {
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White color for dots
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); 
 
-                // Calculate the center of the cell and radius of the dot
                 int radius = wallPartSizeW < wallPartSizeH ? wallPartSizeW / 8 : wallPartSizeH / 8; // Adjust radius
+                int centerX = marginX + (c * wallPartSizeW) + (wallPartSizeW / 2);
+                int centerY = marginY + (r * wallPartSizeH) + (wallPartSizeH / 2);
+
+                RenderFilledCircle(renderer, centerX, centerY, radius);
+                break;
+            }
+            case 'o':
+            {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); 
+
+                int radius = wallPartSizeW < wallPartSizeH ? wallPartSizeW / 3 : wallPartSizeH / 3; // Adjust radius
                 int centerX = marginX + (c * wallPartSizeW) + (wallPartSizeW / 2);
                 int centerY = marginY + (r * wallPartSizeH) + (wallPartSizeH / 2);
 
@@ -214,6 +224,8 @@ int GetMapFile(Map *map)
     *map = allocateMap(rows, cols);
     getDatafromFile(mapFile, map);
     fclose(mapFile);
+    fingOnMap(*map,'0',&map->tele0[0],&map->tele0[1]);
+    fingOnMap(*map,'1',&map->tele1[0],&map->tele1[1]);
     return 0;
 }
 int mapIsInvalid(Map map)
@@ -251,6 +263,7 @@ void getDatafromFile(FILE *f, Map *m)
             c = 0; // Reset columns
         }
     }
+
 }
 
 Map allocateMap(int rows, int cols)
@@ -335,4 +348,20 @@ int getFileRowsAndCols(FILE *file, int *cols, int *rows)
     }
     rewind(file);
     return 0;
+}
+int fingOnMap(Map map,char c, int *x, int *y)
+{
+    for (int i = 0; i < map.rows; i++)
+    {
+        for (int j = 0; j < map.cols; j++)
+        {
+            if (map.data[i][j] == c)
+            {
+                *x = j;
+                *y = i;
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
