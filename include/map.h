@@ -13,7 +13,7 @@ typedef struct {
 
 
 #define MAP_PATH "../assets/map.txt"
-int MapShow(SDL_Renderer *renderer, Map m);
+int renderMap(SDL_Renderer *renderer, Map m);
 int GetMapFile(Map *map);
 void FreeMap(Map *map);
 int getFileRowsAndCols(FILE *file, int *cols, int *rows);

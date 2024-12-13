@@ -1,7 +1,7 @@
 #include "map.h"
 #include "drawing.h"
 
-int MapShow(SDL_Renderer *renderer, Map m)
+int renderMap(SDL_Renderer *renderer, Map m)
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -140,7 +140,7 @@ int MapShow(SDL_Renderer *renderer, Map m)
         }
     }
 
-    SDL_RenderPresent(renderer); // Update the screen with rendered walls
+    //SDL_RenderPresent(renderer); // Update the screen with rendered walls
 
     // Clean up textures after rendering
     if (horizontal != NULL)

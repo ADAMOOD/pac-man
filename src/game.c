@@ -33,6 +33,21 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     }
     double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
 
+
+   /* int textWidth, textHeight;
+    TTF_SizeText(currentFont, menu_items[i], &textWidth, &textHeight);
+    int w, h;
+        SDL_GetRendererOutputSize(renderer, &w, &h);
+
+        SDL_Rect location = {
+            (w - textWidth) / 2,
+            (h / 3) + i * (textHeight + 20),
+            textWidth,
+            textHeight
+        };
+        
+        sdl_draw_text(renderer, currentFont, currentColor, location, menu_items[i]);*/
+
     while (1)
     {
         while (SDL_PollEvent(&event))
@@ -59,14 +74,12 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         updatePlayerRenderPosition(&player, deltaTime);
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
-        MapShow(renderer, map);               // Render the map
+        renderMap(renderer, map);               // Render the map
         renderPlayer(renderer, &player, map); // Render the player
-
+        
         SDL_RenderPresent(renderer); // Present the new frame
-
         SDL_Delay(16); // Limit the frame rate to approximately 60 FPS
     }
-
     // Cleanup resources when exiting the loop
     FreeMap(&map);
     free_player(&player);
