@@ -25,3 +25,5 @@ void free_player(Player *player);
 void renderPlayer(SDL_Renderer *renderer, Player *player,Map m);
 void updatePlayerRenderPosition(Player *player, double deltaTime);
 void updatePlayerAnim(Player *player, double deltaTime);
+void updatePlayer(Player *player, double deltaTime);
+int saveBestScore(Player player);

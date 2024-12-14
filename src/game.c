@@ -35,6 +35,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             if (event.type == SDL_QUIT ||
                 (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
             {
+                saveBestScore(player);
                 // Cleanup resources when exiting the loop
                 FreeMap(&map);
                 free_player(&player);
@@ -49,8 +50,11 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             movePlayer(&player, &map);
             timeAccumulator -= 1.0 / player.speed;
         }
-        // Interpolate player's position for smooth rendering
-        updatePlayerRenderPosition(&player, deltaTime);
+
+
+        // Updates the player's animation and smoothly interpolates their position 
+        updatePlayer(&player, deltaTime);
+
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
         renderMap(renderer, map);             // Render the map

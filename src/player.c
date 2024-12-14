@@ -25,11 +25,11 @@ int init_player(Player *player, SDL_Renderer *renderer, Map map)
     }
 
     player->currentFrame = 0;
-    player->frameTime = 0.1;
+    player->frameTime = 0.08;
     player->timeAccumulator = 0.0;
-    player->frameWidth = 32;  // Předpokládaná šířka jednoho frame
-    player->frameHeight = 32; // Předpokládaná výška jednoho frame
-    player->totalFrames = 3;  // Počet rámů animace (například otevření a zavření pusy)
+    player->frameWidth = 32;  // spritesheet width
+    player->frameHeight = 32; // spritesheet height
+    player->totalFrames = 3;  // frames count
     player->score = 0;
 
     return 0;
@@ -42,6 +42,17 @@ void free_player(Player *player)
         player->texture = NULL;
     }
 }
+
+void updatePlayer(Player *player, double deltaTime)
+{
+    // Update the player's animation, switching between frames of the sprite sheet
+    updatePlayerAnim(player, deltaTime);
+
+    // Smoothly interpolate the player's render position towards the logical position
+    // to ensure visually fluid movement
+    updatePlayerRenderPosition(player, deltaTime);
+}
+
 void updatePlayerAnim(Player *player, double deltaTime)
 {
     player->timeAccumulator += deltaTime;
@@ -55,6 +66,7 @@ void updatePlayerAnim(Player *player, double deltaTime)
 
 void updatePlayerRenderPosition(Player *player, double deltaTime) // interpolation
 {
+
     double step = player->speed * deltaTime;
 
     if (fabs(player->renderX - player->x) > step)
@@ -272,4 +284,26 @@ int getPlayerLocation(Map map, int *x, int *y)
         }
     }
     return 1;
+}
+
+int saveBestScore(Player player)
+{
+    FILE *file = fopen("best.txt", "r+");
+
+    // file did not exist
+    if (file == NULL)
+    {
+        FILE *file = fopen("best.txt", "w+");
+        fprintf(file, "%d", player.score);
+        fclose(file);
+        return 0;
+    }
+    int fileScore;
+    fscanf(file, "%d", &fileScore);
+    if (fileScore < player.score)
+    {
+        FILE *file = fopen("best.txt", "w+");
+        fprintf(file, "%d", player.score);
+        fclose(file);
+    }
 }

@@ -13,3 +13,4 @@ void menu_render(SDL_Renderer *renderer, int selected_index);
 // Funkce pro zpracování událostí v menu
 int menu_handle_event(SDL_Event *event, int *selected_index);
 
+int getBestScore();
