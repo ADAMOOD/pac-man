@@ -125,11 +125,11 @@ int movePlayer(Player *player, Map *map)
             int x, y;
             if (fingOnMap(*map, '0', &x, &y) == 0) // Najít teleportní cíl
             {
-                map->data[player->y][player->x] = '1'; // Vymazání staré pozice hráče
-                SDL_Log("Teleporting player to %d, %d", x, y);
-                player->x = x;
+                map->data[player->y][player->x] = '.'; // Vymazání staré pozice hráče
+                map->data[y][x - 1] = 'p';             // teleportace hrace na mape
+                player->x = x - 1;
                 player->y = y;
-                player->renderX = x;
+                player->renderX = x - 1;
                 player->renderY = y;
                 return 1; // Teleportace
             }
@@ -137,14 +137,16 @@ int movePlayer(Player *player, Map *map)
         }
         if (cell == '0') // Pokud narazíme na teleport
         {
+            SDL_Log("0");
             int x, y;
-            if (fingOnMap(*map, '1', &x, &y) == 1) // Najít teleportní cíl
+            if (fingOnMap(*map, '1', &x, &y) == 0) // Najít teleportní cíl
             {
-                map->data[player->y][player->x] = '0'; // Vymazání staré pozice hráče
-                SDL_Log("Teleporting player to %d, %d", x, y);
-                player->x = x;
+
+                map->data[player->y][player->x] = '.'; // Vymazání staré pozice hráče
+                map->data[y][x + 1] = 'p';             // teleportace hrace na mape
+                player->x = x + 1;
                 player->y = y;
-                player->renderX = x;
+                player->renderX = x + 1;
                 player->renderY = y;
                 return 1; // Teleportace
             }
@@ -234,7 +236,11 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     {
     case SDLK_UP:
     {
-        if (player->y - 1 >= 0 && map.data[player->y - 1][player->x] == ' ' || map.data[player->y - 1][player->x] == '.')
+        if (player->y - 1 >= 0 &&
+            map.data[player->y - 1][player->x] == ' ' ||
+            map.data[player->y - 1][player->x] == '.' ||
+            map.data[player->y - 1][player->x] == '1' ||
+            map.data[player->y - 1][player->x] == '0')
         {
             player->direction = UP;
         }
@@ -242,7 +248,11 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_DOWN:
     {
-        if (player->y + 1 < map.rows && map.data[player->y + 1][player->x] == ' ' || map.data[player->y + 1][player->x] == '.')
+        if (player->y + 1 < map.rows &&
+            map.data[player->y + 1][player->x] == ' ' ||
+            map.data[player->y + 1][player->x] == '.' ||
+            map.data[player->y + 1][player->x] == '1' ||
+            map.data[player->y + 1][player->x] == '0')
         {
             player->direction = DOWN;
         }
@@ -250,7 +260,11 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_LEFT:
     {
-        if (player->x - 1 >= 0 && map.data[player->y][player->x - 1] == ' ' || map.data[player->y][player->x - 1] == '.')
+        if (player->x - 1 >= 0 &&
+            map.data[player->y][player->x - 1] == ' ' ||
+            map.data[player->y][player->x - 1] == '.' ||
+            map.data[player->y][player->x - 1] == '1' ||
+            map.data[player->y][player->x - 1] == '0')
         {
             player->direction = LEFT;
         }
@@ -258,7 +272,11 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
     case SDLK_RIGHT:
     {
-        if (player->x + 1 < map.cols && map.data[player->y][player->x + 1] == ' ' || map.data[player->y][player->x + 1] == '.')
+        if (player->x + 1 < map.cols &&
+            map.data[player->y][player->x + 1] == ' ' ||
+            map.data[player->y][player->x + 1] == '.' ||
+            map.data[player->y][player->x + 1] == '1' ||
+            map.data[player->y][player->x + 1] == '0')
         {
             player->direction = RIGHT;
         }
