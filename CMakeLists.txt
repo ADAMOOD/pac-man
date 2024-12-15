@@ -21,6 +21,8 @@ set(SOURCES
     src/game.c
     src/player.c
     src/uiInfo.c
+    src/ghost.c
+    src/universal.c
 )
 
 add_executable(pacman ${SOURCES})

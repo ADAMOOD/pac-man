@@ -2,6 +2,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <stdlib.h>  // For rand() and srand()
+#include <time.h>    // For time() to seed the random number generator
 typedef enum
 {
     STATE_MENU,
@@ -18,3 +20,5 @@ typedef enum
 } Direction;
 #define SCREENWIDTH 800
 #define SCREENHEIGHT 800
+
+int isCharInArray(char ch, const char *characters);

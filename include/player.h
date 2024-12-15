@@ -18,9 +18,8 @@ typedef struct {
 } Player;
 
 int init_player(Player *player, SDL_Renderer *renderer, Map map);
-int getPlayerLocation(Map map,int *x,int *y);
 int movePlayer(Player *player, Map *map);
-void changeDirection(SDL_Keycode key,Player *player,Map map);
+void playerChangeDirection(SDL_Keycode key,Player *player,Map map);
 void free_player(Player *player);
 void renderPlayer(SDL_Renderer *renderer, Player *player,Map m);
 void updatePlayerRenderPosition(Player *player, double deltaTime);

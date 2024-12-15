@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/pacman.dir/src/drawing.c.o.d"
   "CMakeFiles/pacman.dir/src/game.c.o"
   "CMakeFiles/pacman.dir/src/game.c.o.d"
+  "CMakeFiles/pacman.dir/src/ghost.c.o"
+  "CMakeFiles/pacman.dir/src/ghost.c.o.d"
   "CMakeFiles/pacman.dir/src/main.c.o"
   "CMakeFiles/pacman.dir/src/main.c.o.d"
   "CMakeFiles/pacman.dir/src/map.c.o"
@@ -13,6 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/pacman.dir/src/player.c.o.d"
   "CMakeFiles/pacman.dir/src/uiInfo.c.o"
   "CMakeFiles/pacman.dir/src/uiInfo.c.o.d"
+  "CMakeFiles/pacman.dir/src/universal.c.o"
+  "CMakeFiles/pacman.dir/src/universal.c.o.d"
   "pacman"
   "pacman.pdb"
 )

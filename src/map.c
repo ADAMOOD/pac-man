@@ -61,11 +61,12 @@ int renderMap(SDL_Renderer *renderer, Map m)
             }
             case '|':
             {
-                if (m.data[r + 1][c] == ' ' || m.data[r + 1][c] == 'p' || m.data[r + 1][c] == '.'|| m.data[r + 1][c] == '1'|| m.data[r + 1][c] == '0')
+                const char *validCells = " .o10pc";
+                if (isCharInArray(m.data[r + 1][c],validCells)==0)
                 {
                     SDL_RenderCopy(renderer, endDown, NULL, &wall);
                 }
-                else if (m.data[r - 1][c] == ' ' || m.data[r - 1][c] == 'p' || m.data[r - 1][c] == '.'|| m.data[r - 1][c] == '1'|| m.data[r - 1][c] == '0')
+                else if (isCharInArray(m.data[r - 1][c],validCells)==0)
                 {
                     SDL_RenderCopyEx(renderer, endDown, NULL, &wall, 180.0, NULL, SDL_FLIP_NONE);
                 }

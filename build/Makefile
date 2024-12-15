@@ -177,6 +177,30 @@ src/game.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/game.c.s
 .PHONY : src/game.c.s
 
+src/ghost.o: src/ghost.c.o
+.PHONY : src/ghost.o
+
+# target to build an object file
+src/ghost.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/ghost.c.o
+.PHONY : src/ghost.c.o
+
+src/ghost.i: src/ghost.c.i
+.PHONY : src/ghost.i
+
+# target to preprocess a source file
+src/ghost.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/ghost.c.i
+.PHONY : src/ghost.c.i
+
+src/ghost.s: src/ghost.c.s
+.PHONY : src/ghost.s
+
+# target to generate assembly for a file
+src/ghost.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/ghost.c.s
+.PHONY : src/ghost.c.s
+
 src/main.o: src/main.c.o
 .PHONY : src/main.o
 
@@ -297,6 +321,30 @@ src/uiInfo.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/uiInfo.c.s
 .PHONY : src/uiInfo.c.s
 
+src/universal.o: src/universal.c.o
+.PHONY : src/universal.o
+
+# target to build an object file
+src/universal.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/universal.c.o
+.PHONY : src/universal.c.o
+
+src/universal.i: src/universal.c.i
+.PHONY : src/universal.i
+
+# target to preprocess a source file
+src/universal.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/universal.c.i
+.PHONY : src/universal.c.i
+
+src/universal.s: src/universal.c.s
+.PHONY : src/universal.s
+
+# target to generate assembly for a file
+src/universal.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacman.dir/build.make CMakeFiles/pacman.dir/src/universal.c.s
+.PHONY : src/universal.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -312,6 +360,9 @@ help:
 	@echo "... src/game.o"
 	@echo "... src/game.i"
 	@echo "... src/game.s"
+	@echo "... src/ghost.o"
+	@echo "... src/ghost.i"
+	@echo "... src/ghost.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
@@ -327,6 +378,9 @@ help:
 	@echo "... src/uiInfo.o"
 	@echo "... src/uiInfo.i"
 	@echo "... src/uiInfo.s"
+	@echo "... src/universal.o"
+	@echo "... src/universal.i"
+	@echo "... src/universal.s"
 .PHONY : help
 
 

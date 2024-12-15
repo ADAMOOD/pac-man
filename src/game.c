@@ -2,6 +2,7 @@
 #include "map.h"
 #include "player.h"
 #include "uiInfo.h"
+#include "ghost.h"
 
 // Main game loop for testing game state
 GameState GameTest(SDL_Renderer *renderer, double deltaTime)
@@ -25,6 +26,15 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         FreeMap(&map);
         return STATE_MENU;
     }
+
+    Ghost clyde;
+    if(init_ghost(&clyde,renderer,map,'c',RANDOM,player) == 1)
+    {
+        SDL_Log("Error initializing clyde");
+        FreeMap(&map);
+        free_player(&player);
+        return STATE_MENU;
+    }
     double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
     int x,y;
     while (1)
@@ -40,24 +50,29 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 free_player(&player);
                 return STATE_MENU;
             }
-            changeDirection(event.key.keysym.sym, &player, map);
+            playerChangeDirection(event.key.keysym.sym, &player, map);
         }
         // Update player logic
         timeAccumulator += deltaTime;
         while (timeAccumulator > 1.0 / player.speed)
         {
+            
+            moveGhost(&clyde,&map);
             movePlayer(&player, &map);
             timeAccumulator -= 1.0 / player.speed;
         }
 
+        
 
         // Updates the player's animation and smoothly interpolates their position 
         updatePlayer(&player, deltaTime);
+        updateGhost(&clyde,deltaTime);
 
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
         renderMap(renderer, map);             // Render the map
         renderPlayer(renderer, &player, map); // Render the player
+        renderGhost(renderer,&clyde,map);
         renderUI(player,map,renderer);
 
         SDL_RenderPresent(renderer); // Present the new frame

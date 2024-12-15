@@ -118,7 +118,8 @@ int movePlayer(Player *player, Map *map)
     }
 
     char cell = map->data[newY][newX];
-    if (cell == ' ' || cell == '.' || cell == 'o' || cell == '1' || cell == '0')
+    const char *validCells = " .o10c";
+    if (isCharInArray(cell,validCells)==0)
     {
         if (cell == '1') // Pokud narazíme na teleport
         {
@@ -230,7 +231,7 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
     }
 }
 
-void changeDirection(SDL_Keycode key, Player *player, Map map)
+void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
 {
     switch (key)
     {
@@ -287,22 +288,6 @@ void changeDirection(SDL_Keycode key, Player *player, Map map)
     }
 }
 
-int getPlayerLocation(Map map, int *x, int *y)
-{
-    for (int i = 0; i < map.rows; i++)
-    {
-        for (int j = 0; j < map.cols; j++)
-        {
-            if (map.data[i][j] == 'p')
-            {
-                *x = j;
-                *y = i;
-                return 0;
-            }
-        }
-    }
-    return 1;
-}
 
 int saveBestScore(Player player)
 {

@@ -11,7 +11,9 @@
       "array": "c",
       "string": "c",
       "string_view": "c",
-      "player.h": "c"
+      "player.h": "c",
+      "ghost.h": "c",
+      "time.h": "c"
    },
    "editor.tokenColorCustomizations": {
    "textMateRules": [
