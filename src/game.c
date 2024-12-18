@@ -17,8 +17,8 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         return STATE_MENU;
     }
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    Player player;
 
+    Player player;
     // Initialize player with its texture and initial position
     if (init_player(&player, renderer, map) == 1)
     {
@@ -26,18 +26,21 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         FreeMap(&map);
         return STATE_MENU;
     }
-
+    int pacInitX = player.x, pacInitY = player.y,pacInitDirection=player.direction;
+    SDL_Log("rows %d cols %d", map.rows, map.cols);
     Ghost clyde;
-    if(init_ghost(&clyde,renderer,map,'c',RANDOM,player) == 1)
+    if (init_ghost(&clyde, renderer, map, 'c', RANDOM, player) == 1)
     {
         SDL_Log("Error initializing clyde");
         FreeMap(&map);
         free_player(&player);
         return STATE_MENU;
     }
+
     double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
-    int x,y;
-    while (1)
+    int x, y;
+    int running = 1;
+    while (running)
     {
         while (SDL_PollEvent(&event))
         {
@@ -48,6 +51,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 // Cleanup resources when exiting the loop
                 FreeMap(&map);
                 free_player(&player);
+                free_ghost(&clyde);
                 return STATE_MENU;
             }
             playerChangeDirection(event.key.keysym.sym, &player, map);
@@ -56,24 +60,36 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         timeAccumulator += deltaTime;
         while (timeAccumulator > 1.0 / player.speed)
         {
-            
-            moveGhost(&clyde,&map);
+            if (moveGhost(&clyde, &map) == 2)
+            {
+                player.lives--;
+                if (player.lives <= 0)
+                {
+                    running = 0;
+                }
+                player.direction=pacInitDirection;
+                movePlayerTo(pacInitX, pacInitY, &player,&map);
+                SDL_Delay(3000);
+                continue;
+            }
             movePlayer(&player, &map);
             timeAccumulator -= 1.0 / player.speed;
         }
 
-        
-
-        // Updates the player's animation and smoothly interpolates their position 
+        if (!running)
+        {
+            break; // Exit the loop after all updates
+        }
+        // Updates the player's animation and smoothly interpolates their position
         updatePlayer(&player, deltaTime);
-        updateGhost(&clyde,deltaTime);
+        updateGhost(&clyde, deltaTime);
 
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
         renderMap(renderer, map);             // Render the map
         renderPlayer(renderer, &player, map); // Render the player
-        renderGhost(renderer,&clyde,map);
-        renderUI(player,map,renderer);
+        renderGhost(renderer, &clyde, map);
+        renderUI(player, map, renderer);
 
         SDL_RenderPresent(renderer); // Present the new frame
         SDL_Delay(16);               // Limit the frame rate to approximately 60 FPS
@@ -81,5 +97,6 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     // Cleanup resources when exiting the loop
     FreeMap(&map);
     free_player(&player);
+    free_ghost(&clyde);
     return STATE_MENU;
 }

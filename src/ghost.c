@@ -9,11 +9,12 @@ int init_ghost(Ghost *ghost, SDL_Renderer *renderer, Map map, char indentifier,M
         SDL_Log("ghost %c not found", indentifier);
         return 1;
     }
+    ghost->lastCell='.';
     ghost->x=x;
     ghost->y=y;
     ghost->renderX=x;
     ghost->renderY=y;
-
+    ghost->id=indentifier;
     ghost->texture = IMG_LoadTexture(renderer, "../assets/GhostsSpriteSheet.png");
     if (ghost->texture == NULL)
     {
@@ -24,8 +25,8 @@ int init_ghost(Ghost *ghost, SDL_Renderer *renderer, Map map, char indentifier,M
     ghost->currentFrame = 0;
     ghost->frameTime = 1.08;
     ghost->timeAccumulator = 0.0;
-    ghost->frameWidth = 16;  // spritesheet width
-    ghost->frameHeight = 16; // spritesheet height
+    ghost->frameWidth = 15;  // spritesheet width
+    ghost->frameHeight = 15; // spritesheet height
     ghost->totalFrames = 2;  // frames count
     ghost->state=1;
     ghost->movement=movement;
@@ -114,7 +115,7 @@ int moveGhost(Ghost *ghost, Map *map)
         return 0; // Žádný pohyb mimo hranice
     }
     char cell = map->data[newY][newX];
-    const char *validCells = " .o10p";
+    const char *validCells = " .o10";
     if (isCharInArray(cell,validCells)==0)
     {
         if (cell == '1') // Pokud narazíme na teleport
@@ -157,6 +158,11 @@ int moveGhost(Ghost *ghost, Map *map)
         ghost->y = newY;
         ghost->isMooving=1;
         return 1; // Pohyb úspěšný
+    }
+    if(cell =='p')
+    {
+        SDL_Log("Life lost");
+        return 2;
     }
     ghost->isMooving=0;
     setRandomDirection(ghost);

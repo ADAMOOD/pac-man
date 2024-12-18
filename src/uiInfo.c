@@ -5,17 +5,19 @@
 void renderUI(Player player, Map map, SDL_Renderer *renderer)
 {
     char scoreText[50];
-    snprintf(scoreText, sizeof(scoreText), "%d", player.score); 
+    snprintf(scoreText, sizeof(scoreText), "%d", player.score);
 
     int w, h;
     SDL_GetRendererOutputSize(renderer, &w, &h);
 
     // Dynamic size of text depending on window width
     int fontSize = w / 25;
-    if (fontSize < 12) fontSize = 12; // minimal size
-    if (fontSize > 50) fontSize = 50; // maximal size
+    if (fontSize < 12)
+        fontSize = 12; // Minimal size
+    if (fontSize > 50)
+        fontSize = 50; // Maximal size
 
-    // Načtení fontu s danou velikostí
+    // Load the font
     TTF_Font *font = TTF_OpenFont("pixelated.ttf", fontSize);
     if (!font)
     {
@@ -24,35 +26,56 @@ void renderUI(Player player, Map map, SDL_Renderer *renderer)
     }
 
     int textWidth, textHeight;
-    TTF_SizeText(font, scoreText, &textWidth, &textHeight); 
+    TTF_SizeText(font, scoreText, &textWidth, &textHeight);
 
     int wallPartSizeW, wallPartSizeH, marginX, marginY;
     getMapMesurements(map, w, h, &wallPartSizeW, &wallPartSizeH, &marginX, &marginY);
 
-    // Zajištění minimálního volného prostoru pod mapou
-    int minMarginBottom = h / 20; // Minimální spodní mezera (5 % výšky obrazovky)
+    // Ensure minimal space below the map
+    int minMarginBottom = h / 20; // Minimum bottom margin (5% of screen height)
 
-    // Výpočet pozice textu
-    SDL_Rect location = {
-        marginX + (wallPartSizeW * map.cols - textWidth) / 2,  // X: zarovnání na střed mapy
-        marginY + wallPartSizeH * map.rows + minMarginBottom, // Y: pod mapou s mezerou
-        textWidth,                                            // Šířka textu
-        textHeight                                            // Výška textu
-    };
+    // Position of the score text
+    SDL_Rect textLocation = {
+        marginX + (wallPartSizeW * map.cols - textWidth) / 2, // Centered horizontally in map
+        marginY + wallPartSizeH * map.rows + minMarginBottom, // Below the map
+        textWidth,
+        textHeight};
 
-    // Kontrola, jestli text nepřesahuje obrazovku
-    if (location.y + location.h > h)
+    if (textLocation.y + textLocation.h > h)
     {
-        location.y = h - location.h - minMarginBottom; // Posunout text výše, aby byl viditelný
+        textLocation.y = h - textLocation.h - minMarginBottom;
     }
 
-    // Nastavení barvy textu (bílá)
+    // Render the score text
     SDL_Color white = {255, 255, 255, 255};
+    sdl_draw_text(renderer, font, white, textLocation, scoreText);
 
-    // Vykreslení textu (např. skóre)
-    sdl_draw_text(renderer, font, white, location, scoreText);
+    // Render player lives as sprites
+    if (player.texture != NULL)
+    {
+        SDL_Rect srcRect = {
+            0,                     // First frame of the sprite sheet
+            0,
+            player.frameWidth,     // Width of one frame
+            player.frameHeight};   // Height of one frame
 
+        SDL_Rect destRect = {
+            textLocation.x + textWidth + fontSize, // Right after the score text
+            textLocation.y,
+            fontSize,                             // Scale the sprite to the font size
+            fontSize};
+
+        for (int i = 0; i < player.lives; i++)
+        {
+            SDL_RenderCopy(renderer, player.texture, &srcRect, &destRect);
+
+            // Move to the right for the next sprite
+            destRect.x += fontSize + 5; // Add small padding between sprites
+        }
+    }
 
     TTF_CloseFont(font);
 }
+
+
 

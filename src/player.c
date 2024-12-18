@@ -31,6 +31,7 @@ int init_player(Player *player, SDL_Renderer *renderer, Map map)
     player->frameHeight = 32; // spritesheet height
     player->totalFrames = 3;  // frames count
     player->score = 0;
+    player->lives = 3;
 
     return 0;
 }
@@ -118,8 +119,8 @@ int movePlayer(Player *player, Map *map)
     }
 
     char cell = map->data[newY][newX];
-    const char *validCells = " .o10c";
-    if (isCharInArray(cell,validCells)==0)
+    const char *validCells = " .o10";
+    if (isCharInArray(cell, validCells) == 0)
     {
         if (cell == '1') // Pokud narazíme na teleport
         {
@@ -230,7 +231,18 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
         SDL_Log("Player texture not set!");
     }
 }
-
+void movePlayerTo(int x, int y, Player *player, Map *map)
+{
+    showMap(map);
+    SDL_Log("player -> %d %d",player->x,player->y);
+    map->data[player->y][player->x]='.';
+    map->data[y][x]='p';
+    player->x = x;
+    player->y = y;
+    player->renderX = x;
+    player->renderY = y;
+    showMap(map);
+}
 void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
 {
     switch (key)
@@ -238,7 +250,7 @@ void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
     case SDLK_UP:
     {
         if (player->y - 1 >= 0 &&
-            map.data[player->y - 1][player->x] == ' ' ||
+                map.data[player->y - 1][player->x] == ' ' ||
             map.data[player->y - 1][player->x] == '.' ||
             map.data[player->y - 1][player->x] == '1' ||
             map.data[player->y - 1][player->x] == '0')
@@ -250,7 +262,7 @@ void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
     case SDLK_DOWN:
     {
         if (player->y + 1 < map.rows &&
-            map.data[player->y + 1][player->x] == ' ' ||
+                map.data[player->y + 1][player->x] == ' ' ||
             map.data[player->y + 1][player->x] == '.' ||
             map.data[player->y + 1][player->x] == '1' ||
             map.data[player->y + 1][player->x] == '0')
@@ -262,7 +274,7 @@ void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
     case SDLK_LEFT:
     {
         if (player->x - 1 >= 0 &&
-            map.data[player->y][player->x - 1] == ' ' ||
+                map.data[player->y][player->x - 1] == ' ' ||
             map.data[player->y][player->x - 1] == '.' ||
             map.data[player->y][player->x - 1] == '1' ||
             map.data[player->y][player->x - 1] == '0')
@@ -274,7 +286,7 @@ void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
     case SDLK_RIGHT:
     {
         if (player->x + 1 < map.cols &&
-            map.data[player->y][player->x + 1] == ' ' ||
+                map.data[player->y][player->x + 1] == ' ' ||
             map.data[player->y][player->x + 1] == '.' ||
             map.data[player->y][player->x + 1] == '1' ||
             map.data[player->y][player->x + 1] == '0')
@@ -287,7 +299,6 @@ void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
         break;
     }
 }
-
 
 int saveBestScore(Player player)
 {

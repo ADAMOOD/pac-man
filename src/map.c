@@ -229,6 +229,40 @@ int GetMapFile(Map *map)
     fingOnMap(*map,'1',&map->tele1[0],&map->tele1[1]);
     return 0;
 }
+
+void showMap(Map *map) {
+    // Výpočet celkové velikosti pro alokaci
+    int totalSize = (map->rows * map->cols) + map->rows + 1; // + map->rows pro \n a +1 pro \0
+
+    // Alokace paměti
+    char *result = (char *)malloc(totalSize * sizeof(char));
+    if (result == NULL) {
+        SDL_Log("Failed to allocate memory for map string");
+        return;
+    }
+
+    int pos = 0; // Ukazatel do výsledného řetězce
+    for (int i = 0; i < map->rows; i++) {
+        for (int j = 0; j < map->cols; j++) {
+            // Kontrola dat během iterace
+            if (map->data[i][j] == '\0') {
+                SDL_Log("Unexpected null character in map data at row %d, col %d", i, j);
+                result[pos++] = '?'; // Nahrazení neplatného znaku
+            } else {
+                result[pos++] = map->data[i][j];
+            }
+        }
+        result[pos++] = '\n'; // Přidání nového řádku
+    }
+    result[pos] = '\0'; // Ukončení řetězce
+
+    // Vykreslení mapy
+    SDL_Log("Map (%dx%d):\n%s", map->rows, map->cols, result);
+
+    // Uvolnění paměti
+    free(result);
+}
+
 int mapIsInvalid(Map map)
 {
     return map.data == NULL || map.cols == 0 || map.rows == 0;

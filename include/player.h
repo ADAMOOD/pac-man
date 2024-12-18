@@ -15,6 +15,7 @@ typedef struct {
     int frameWidth, frameHeight; // Rozměry jednoho frame
     int totalFrames;             // Počet celkových snímků animace
     int score;
+    int lives;
 } Player;
 
 int init_player(Player *player, SDL_Renderer *renderer, Map map);
@@ -26,3 +27,4 @@ void updatePlayerRenderPosition(Player *player, double deltaTime);
 void updatePlayerAnim(Player *player, double deltaTime);
 void updatePlayer(Player *player, double deltaTime);
 int saveBestScore(Player player);
+void movePlayerTo(int x, int y, Player *player, Map *map);
