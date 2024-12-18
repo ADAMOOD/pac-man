@@ -90,6 +90,7 @@ void updatePlayerRenderPosition(Player *player, double deltaTime) // interpolati
 }
 int movePlayer(Player *player, Map *map)
 {
+
     int newX = player->x;
     int newY = player->y;
 
@@ -155,21 +156,21 @@ int movePlayer(Player *player, Map *map)
             return 0;
         }
 
-        if (cell == 'o') // Zvýšení skóre pro velkou perličku
-        {
-            player->score += BIGPEARL;
-        }
+        map->data[player->y][player->x] = '.'; // Vymazání staré pozice hráče
+        map->data[newY][newX] = 'p';           // Nová pozice hráče
+        player->x = newX;
+        player->y = newY;
 
         if (cell == ' ') // Zvýšení skóre pro malou perličku
         {
             player->score += SMALLPEARL;
         }
 
-        map->data[player->y][player->x] = '.'; // Vymazání staré pozice hráče
-        map->data[newY][newX] = 'p';           // Nová pozice hráče
-        player->x = newX;
-        player->y = newY;
-
+        if (cell == 'o') // Zvýšení skóre pro velkou perličku
+        {
+            player->score += BIGPEARL;
+            return 3;
+        }
         return 1; // Pohyb úspěšný
     }
 
@@ -234,9 +235,9 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
 void movePlayerTo(int x, int y, Player *player, Map *map)
 {
     showMap(map);
-    SDL_Log("player -> %d %d",player->x,player->y);
-    map->data[player->y][player->x]='.';
-    map->data[y][x]='p';
+    SDL_Log("player -> %d %d", player->x, player->y);
+    map->data[player->y][player->x] = '.';
+    map->data[y][x] = 'p';
     player->x = x;
     player->y = y;
     player->renderX = x;

@@ -12,6 +12,8 @@ int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, cha
     ghost->lastCell = '.';
     ghost->x = x;
     ghost->y = y;
+    ghost->homeX = x;
+    ghost->homeY = y;
     ghost->renderX = x;
     ghost->renderY = y;
     ghost->id = indentifier;
@@ -21,6 +23,12 @@ int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, cha
         SDL_Log("Failed to load ghost texture: %s", IMG_GetError());
         return 1;
     }
+    ghost->textureBlue = IMG_LoadTexture(renderer, "../assets/GhostsEatableSpriteSheet.png");
+    if (ghost->texture == NULL)
+    {
+        SDL_Log("Failed to load ghost Blue texture: %s", IMG_GetError());
+        return 1;
+    }
     ghost->speed = player.speed / 0.8;
     ghost->currentFrame = 0;
     ghost->frameTime = 1.08;
@@ -28,7 +36,7 @@ int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, cha
     ghost->frameWidth = 16;  // spritesheet width
     ghost->frameHeight = 16; // spritesheet height
     ghost->totalFrames = 2;  // frames count
-    ghost->state = 1;
+    ghost->state = HUNTING;
     ghost->movement = movement;
     return 0;
 }
@@ -38,6 +46,11 @@ void free_ghost(Ghost *ghost)
     {
         SDL_DestroyTexture(ghost->texture);
         ghost->texture = NULL;
+    }
+    if (ghost->textureBlue != NULL)
+    {
+        SDL_DestroyTexture(ghost->textureBlue);
+        ghost->textureBlue = NULL;
     }
 }
 
@@ -90,9 +103,9 @@ int moveAllTheGosts(Ghost *ghost, int count, Map *map)
     int ret = 0;
     for (int i = 0; i < count; i++)
     {
-        if ((ret=moveGhost(&ghost[i], map)) == 2)
+        if ((ret = moveGhost(&ghost[i], map)) == 2)
         {
-           return ret;
+            return ret;
         }
     }
     return ret;
@@ -147,7 +160,6 @@ int moveGhost(Ghost *ghost, Map *map)
         }
         if (cell == '0') // Pokud narazíme na teleport
         {
-            SDL_Log("0");
             int x, y;
             if (fingOnMap(*map, '1', &x, &y) == 0) // Najít teleportní cíl
             {
@@ -172,7 +184,6 @@ int moveGhost(Ghost *ghost, Map *map)
     }
     if (cell == 'p')
     {
-        SDL_Log("Life lost");
         return 2;
     }
     ghost->isMooving = 0;
@@ -198,32 +209,40 @@ void renderGhost(SDL_Renderer *renderer, Ghost *ghost, Map m)
     {
         // Určení, který rám použít na základě směru
         SDL_Rect srcRect = {0, 0, ghost->frameWidth, ghost->frameHeight};
-
-        // Změna snímků na základě směru pohybu
-        switch (ghost->direction)
+        srcRect.y = 0;
+        switch (ghost->state)
         {
-        case UP:
-            srcRect.x = (4 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-            break;
-        case DOWN:
-            srcRect.x = (6 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-            break;
-        case LEFT:
-            srcRect.x = (2 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-            break;
-        case RIGHT:
-            srcRect.x = (0 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-            break;
-        default:
-            srcRect.x = 0; // Výchozí pozice
+        case HUNTING:
+        {
+            // Změna snímků na základě směru pohybu
+            switch (ghost->direction)
+            {
+            case UP:
+                srcRect.x = (4 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+                break;
+            case DOWN:
+                srcRect.x = (6 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+                break;
+            case LEFT:
+                srcRect.x = (2 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+                break;
+            case RIGHT:
+                srcRect.x = (0 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+                break;
+            default:
+                srcRect.x = 0; // Výchozí pozice
+                break;
+            }
+            SDL_RenderCopy(renderer, ghost->texture, &srcRect, &ghostRect);
             break;
         }
-
-        // Aktualizace snímku na základě aktuální animace
-        srcRect.y = 0; // Assuming all frames are in one row of the sprite sheet
-
-        // Vykreslení ducha s aktuálním snímkem
-        SDL_RenderCopy(renderer, ghost->texture, &srcRect, &ghostRect);
+        case EATEABLE:
+        {
+            srcRect.x = (0 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+            SDL_RenderCopy(renderer, ghost->textureBlue, &srcRect, &ghostRect);
+             break;
+        }
+        }
     }
     else
     {

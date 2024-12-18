@@ -34,6 +34,7 @@ CMakeFiles/pacman.dir/src/drawing.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -272,6 +273,7 @@ CMakeFiles/pacman.dir/src/game.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -508,6 +510,7 @@ CMakeFiles/pacman.dir/src/ghost.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -746,6 +749,7 @@ CMakeFiles/pacman.dir/src/main.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -980,6 +984,7 @@ CMakeFiles/pacman.dir/src/map.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -1214,6 +1219,7 @@ CMakeFiles/pacman.dir/src/menu.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -1448,6 +1454,7 @@ CMakeFiles/pacman.dir/src/player.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -1683,6 +1690,7 @@ CMakeFiles/pacman.dir/src/uiInfo.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h
@@ -1915,6 +1923,7 @@ CMakeFiles/pacman.dir/src/universal.c.o
  /usr/include/SDL2/SDL_messagebox.h
  /usr/include/SDL2/SDL_metal.h
  /usr/include/SDL2/SDL_misc.h
+ /usr/include/SDL2/SDL_mixer.h
  /usr/include/SDL2/SDL_mouse.h
  /usr/include/SDL2/SDL_mutex.h
  /usr/include/SDL2/SDL_pixels.h

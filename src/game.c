@@ -9,6 +9,39 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
 {
     SDL_Event event;
     Map map;
+    // Inicializace SDL a SDL_mixer
+    if (SDL_Init(SDL_INIT_AUDIO) < 0)
+    {
+        SDL_Log("SDL_Init failed: %s", SDL_GetError());
+        return -1;
+    }
+
+    if (Mix_Init(MIX_INIT_MP3) == 0)
+    {
+        SDL_Log("Mix_Init failed: %s", Mix_GetError());
+        return -1;
+    }
+
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
+    {
+        SDL_Log("Mix_OpenAudio failed: %s", Mix_GetError());
+        return -1;
+    }
+
+    // Načítání hudby
+    Mix_Music *background_music = Mix_LoadMUS("../assets/bacgroundMusici.mp3");
+    if (background_music == NULL)
+    {
+        SDL_Log("Error loading background music: %s", Mix_GetError());
+        return -1;
+    }
+
+    // Přehrávání hudby na smyčku (-1)
+    if (Mix_PlayMusic(background_music, -1) == -1)
+    {
+        SDL_Log("Error playing background music: %s", Mix_GetError());
+        return -1;
+    }
 
     // Load the map file
     if (GetMapFile(&map) != 0)
@@ -67,6 +100,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
     int x, y;
     int running = 1;
+    double eating = 0.0;
     while (running)
     {
         while (SDL_PollEvent(&event))
@@ -82,7 +116,9 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 free_ghost(&ghosts[1]);
                 free_ghost(&ghosts[2]);
                 free_ghost(&ghosts[3]);
-
+                Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
+                Mix_CloseAudio();
+                Mix_Quit(); // Ukončení SDL_mixer
                 return STATE_MENU;
             }
             playerChangeDirection(event.key.keysym.sym, &player, map);
@@ -91,8 +127,13 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         timeAccumulator += deltaTime;
         while (timeAccumulator > 1.0 / player.speed)
         {
-            if (moveAllTheGosts(ghosts, 4, &map) == 2)
+            SDL_Log("%d", ghosts[0].state);
+            if (moveGhost(&ghosts[0], &map) == 2 && ghosts[0].state == HUNTING ||
+                moveGhost(&ghosts[1], &map) == 2 && ghosts[1].state == HUNTING ||
+                moveGhost(&ghosts[2], &map) == 2 && ghosts[0].state == HUNTING ||
+                moveGhost(&ghosts[3], &map) == 2 && ghosts[0].state == HUNTING)
             {
+                Mix_HaltMusic();
                 player.lives--;
                 if (player.lives <= 0)
                 {
@@ -101,22 +142,49 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 player.direction = pacInitDirection;
                 movePlayerTo(pacInitX, pacInitY, &player, &map);
                 SDL_Delay(3000);
+                if (Mix_PlayMusic(background_music, -1) == -1)
+                {
+                    SDL_Log("Error playing background music: %s", Mix_GetError());
+                    return -1;
+                }
                 continue;
             }
-            movePlayer(&player, &map);
+            if (movePlayer(&player, &map) == 3)
+            {
+                ghosts[0].state = EATEABLE;
+                ghosts[1].state = EATEABLE;
+                ghosts[2].state = EATEABLE;
+                ghosts[3].state = EATEABLE;
+                eating = 0;
+            }
             timeAccumulator -= 1.0 / player.speed;
         }
 
+        if (ghosts[0].state == EATEABLE ||
+            ghosts[1].state == EATEABLE ||
+            ghosts[2].state == EATEABLE ||
+            ghosts[3].state == EATEABLE)
+        {
+            eating += deltaTime * 1000;
+        }
+        if (eating > 5000)
+        {
+            ghosts[0].state = HUNTING;
+            ghosts[1].state = HUNTING;
+            ghosts[2].state = HUNTING;
+            ghosts[3].state = HUNTING;
+        }
         if (!running)
         {
             break; // Exit the loop after all updates
         }
         // Updates the player's animation and smoothly interpolates their position
         updatePlayer(&player, deltaTime);
-        updateGhost(&ghosts[0],deltaTime);
-        updateGhost(&ghosts[1],deltaTime);
-        updateGhost(&ghosts[2],deltaTime);
-        updateGhost(&ghosts[3],deltaTime);
+        // all the ghosts
+        updateGhost(&ghosts[0], deltaTime);
+        updateGhost(&ghosts[1], deltaTime);
+        updateGhost(&ghosts[2], deltaTime);
+        updateGhost(&ghosts[3], deltaTime);
 
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
@@ -138,5 +206,8 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     free_ghost(&ghosts[1]);
     free_ghost(&ghosts[2]);
     free_ghost(&ghosts[3]);
+    Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
+    Mix_CloseAudio();
+    Mix_Quit(); // Ukončení SDL_mixer
     return STATE_MENU;
 }

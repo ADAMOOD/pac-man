@@ -233,6 +233,9 @@ SDL2_IMAGE_LIBRARY:UNINITIALIZED=/path/to/SDL2_image/libSDL2_image.so
 //The directory containing a CMake configuration file for SDL2_image.
 SDL2_image_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/SDL2_image
 
+//The directory containing a CMake configuration file for SDL2_mixer.
+SDL2_mixer_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/SDL2_mixer
+
 //The directory containing a CMake configuration file for SDL2_ttf.
 SDL2_ttf_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/SDL2_ttf
 

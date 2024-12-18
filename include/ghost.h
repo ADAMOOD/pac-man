@@ -8,13 +8,18 @@
 typedef enum{
 RANDOM
 }Movements;
+typedef enum{
+HUNTING,
+EATEABLE,
+}GHOSTSTATE;
 
 typedef struct {
-    int x, y;                    // Logická pozice hráče na mapě
+    int x, y,homeX,homeY;                    // Logická pozice hráče na mapě
     double renderX, renderY;     // Vykreslená (interpolovaná) pozice
     Direction direction;         // Směr pohybu hráče
     double speed;                // Rychlost hráče
     SDL_Texture *texture;        // Textura pro celou postavu (sprite sheet)
+    SDL_Texture *textureBlue;        // Textura pro celou postavu (sprite sheet)
     int currentFrame;            // Aktuální frame animace
     double frameTime;            // Čas pro každý frame
     double timeAccumulator;      // Akumulátor času pro animaci
@@ -22,17 +27,13 @@ typedef struct {
     int totalFrames;             // Počet celkových snímků animace
     char id;
     Movements movement;
-    int state;
+    GHOSTSTATE state;
     char lastCell;
     int isMooving;
+
 } Ghost;
 
-typedef struct {
-    Ghost blinky;
-    Ghost pinky;
-    Ghost inky;
-    Ghost clyde;
-} Ghosts;
+
 
 int init_ghost(Ghost *ghost, SDL_Renderer *renderer,char* texture, Map map, char indentifier, Movements movement, Player player);
 void changeDirection(SDL_Keycode key, Ghost *ghost, Map map);

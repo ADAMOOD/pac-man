@@ -33,6 +33,7 @@ CMakeFiles/pacman.dir/src/drawing.c.o: /home/kijonka/projekt/src/drawing.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -270,6 +271,7 @@ CMakeFiles/pacman.dir/src/game.c.o: /home/kijonka/projekt/src/game.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -505,6 +507,7 @@ CMakeFiles/pacman.dir/src/ghost.c.o: /home/kijonka/projekt/src/ghost.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -742,6 +745,7 @@ CMakeFiles/pacman.dir/src/main.c.o: /home/kijonka/projekt/src/main.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -975,6 +979,7 @@ CMakeFiles/pacman.dir/src/map.c.o: /home/kijonka/projekt/src/map.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -1208,6 +1213,7 @@ CMakeFiles/pacman.dir/src/menu.c.o: /home/kijonka/projekt/src/menu.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -1441,6 +1447,7 @@ CMakeFiles/pacman.dir/src/player.c.o: /home/kijonka/projekt/src/player.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -1675,6 +1682,7 @@ CMakeFiles/pacman.dir/src/uiInfo.c.o: /home/kijonka/projekt/src/uiInfo.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -1906,6 +1914,7 @@ CMakeFiles/pacman.dir/src/universal.c.o: /home/kijonka/projekt/src/universal.c \
   /usr/include/SDL2/SDL_messagebox.h \
   /usr/include/SDL2/SDL_metal.h \
   /usr/include/SDL2/SDL_misc.h \
+  /usr/include/SDL2/SDL_mixer.h \
   /usr/include/SDL2/SDL_mouse.h \
   /usr/include/SDL2/SDL_mutex.h \
   /usr/include/SDL2/SDL_pixels.h \
@@ -2341,10 +2350,6 @@ CMakeFiles/pacman.dir/src/universal.c.o: /home/kijonka/projekt/src/universal.c \
 
 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
 
-/usr/include/features-time64.h:
-
-/usr/include/SDL2/SDL_gesture.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512bwintrin.h:
 
 /home/kijonka/projekt/include/universal.h:
@@ -2381,6 +2386,10 @@ CMakeFiles/pacman.dir/src/universal.c.o: /home/kijonka/projekt/src/universal.c \
 
 /usr/include/SDL2/SDL_config.h:
 
+/usr/include/SDL2/SDL_gesture.h:
+
+/usr/include/features-time64.h:
+
 /usr/include/SDL2/SDL_guid.h:
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
@@ -2410,6 +2419,8 @@ CMakeFiles/pacman.dir/src/universal.c.o: /home/kijonka/projekt/src/universal.c \
 /usr/include/SDL2/SDL_mutex.h:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+/usr/include/SDL2/SDL_mixer.h:
 
 /usr/include/SDL2/SDL_loadso.h:
 
@@ -2567,6 +2578,12 @@ CMakeFiles/pacman.dir/src/universal.c.o: /home/kijonka/projekt/src/universal.c \
 
 /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
 
+/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512fp16intrin.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/13/include/vpclmulqdqintrin.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
@@ -2590,9 +2607,3 @@ CMakeFiles/pacman.dir/src/universal.c.o: /home/kijonka/projekt/src/universal.c \
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/waitstatus.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512fp16intrin.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/wchar.h:
