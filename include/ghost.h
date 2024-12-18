@@ -27,6 +27,12 @@ typedef struct {
     int isMooving;
 } Ghost;
 
+typedef struct {
+    Ghost blinky;
+    Ghost pinky;
+    Ghost inky;
+    Ghost clyde;
+} Ghosts;
 
 int init_ghost(Ghost *ghost, SDL_Renderer *renderer,char* texture, Map map, char indentifier, Movements movement, Player player);
 void changeDirection(SDL_Keycode key, Ghost *ghost, Map map);
@@ -37,4 +43,5 @@ void updateGhostAnim(Ghost *ghost, double deltaTime);
 void free_ghost(Ghost *ghost);
 void updateGhost(Ghost *ghost, double deltaTime);
 void setRandomDirection(Ghost *ghost);
+int moveAllTheGosts(Ghost *ghost, int count, Map *map);
 

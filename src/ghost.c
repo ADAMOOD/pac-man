@@ -1,6 +1,6 @@
 #include "ghost.h"
 
-int init_ghost(Ghost *ghost, SDL_Renderer *renderer,char* texture, Map map, char indentifier, Movements movement, Player player)
+int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, char indentifier, Movements movement, Player player)
 {
     ghost->direction = UP;
     int x, y;
@@ -84,6 +84,18 @@ void updateGhostRenderPosition(Ghost *ghost, double deltaTime) // interpolation
     {
         ghost->renderY = ghost->y;
     }
+}
+int moveAllTheGosts(Ghost *ghost, int count, Map *map)
+{
+    int ret = 0;
+    for (int i = 0; i < count; i++)
+    {
+        if ((ret=moveGhost(&ghost[i], map)) == 2)
+        {
+           return ret;
+        }
+    }
+    return ret;
 }
 int moveGhost(Ghost *ghost, Map *map)
 {
@@ -188,25 +200,24 @@ void renderGhost(SDL_Renderer *renderer, Ghost *ghost, Map m)
         SDL_Rect srcRect = {0, 0, ghost->frameWidth, ghost->frameHeight};
 
         // Změna snímků na základě směru pohybu
-switch (ghost->direction)
-{
-    case UP:
-        srcRect.x = (4 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-        break;
-    case DOWN:
-        srcRect.x = (6 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-        break;
-    case LEFT:
-        srcRect.x = (2 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-        break;
-    case RIGHT:
-        srcRect.x = (0 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
-        break;
-    default:
-        srcRect.x = 0; // Výchozí pozice
-        break;
-}
-
+        switch (ghost->direction)
+        {
+        case UP:
+            srcRect.x = (4 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+            break;
+        case DOWN:
+            srcRect.x = (6 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+            break;
+        case LEFT:
+            srcRect.x = (2 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+            break;
+        case RIGHT:
+            srcRect.x = (0 * ghost->frameWidth) + (ghost->currentFrame % 2) * ghost->frameWidth;
+            break;
+        default:
+            srcRect.x = 0; // Výchozí pozice
+            break;
+        }
 
         // Aktualizace snímku na základě aktuální animace
         srcRect.y = 0; // Assuming all frames are in one row of the sprite sheet

@@ -28,39 +28,39 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     }
     int pacInitX = player.x, pacInitY = player.y, pacInitDirection = player.direction;
     SDL_Log("rows %d cols %d", map.rows, map.cols);
-    Ghost blinky, pinky, inky, clyde;
-    if (init_ghost(&blinky, renderer, "../assets/BlinkySpriteSheet.png", map, 'b', RANDOM, player) == 1)
+    Ghost ghosts[4];
+    if (init_ghost(&ghosts[0], renderer, "../assets/BlinkySpriteSheet.png", map, 'b', RANDOM, player) == 1)
     {
-        SDL_Log("Error initializing clyde");
+        SDL_Log("Error initializing blinky");
         FreeMap(&map);
         free_player(&player);
         return STATE_MENU;
     }
-    if (init_ghost(&pinky, renderer, "../assets/PinkySpriteSheet.png", map, 'n', RANDOM, player) == 1)
+    if (init_ghost(&ghosts[1], renderer, "../assets/PinkySpriteSheet.png", map, 'n', RANDOM, player) == 1)
     {
-        SDL_Log("Error initializing clyde");
+        SDL_Log("Error initializing pinky");
         FreeMap(&map);
         free_player(&player);
-        free_ghost(&blinky);
+        free_ghost(&ghosts[0]);
         return STATE_MENU;
     }
-    if (init_ghost(&inky, renderer, "../assets/InkySpriteSheet.png", map, 'i', RANDOM, player) == 1)
+    if (init_ghost(&ghosts[2], renderer, "../assets/InkySpriteSheet.png", map, 'i', RANDOM, player) == 1)
     {
-        SDL_Log("Error initializing clyde");
+        SDL_Log("Error initializing inky");
         FreeMap(&map);
         free_player(&player);
-        free_ghost(&blinky);
-        free_ghost(&pinky);
+        free_ghost(&ghosts[0]);
+        free_ghost(&ghosts[1]);
         return STATE_MENU;
     }
-    if (init_ghost(&clyde, renderer, "../assets/ClydeSpriteSheet.png", map, 'c', RANDOM, player) == 1)
+    if (init_ghost(&ghosts[3], renderer, "../assets/ClydeSpriteSheet.png", map, 'c', RANDOM, player) == 1)
     {
         SDL_Log("Error initializing clyde");
         FreeMap(&map);
         free_player(&player);
-        free_ghost(&blinky);
-        free_ghost(&pinky);
-        free_ghost(&inky);
+        free_ghost(&ghosts[0]);
+        free_ghost(&ghosts[1]);
+        free_ghost(&ghosts[2]);
         return STATE_MENU;
     }
 
@@ -78,10 +78,10 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 // Cleanup resources when exiting the loop
                 FreeMap(&map);
                 free_player(&player);
-                free_ghost(&blinky);
-                free_ghost(&pinky);
-                free_ghost(&inky);
-                free_ghost(&clyde);
+                free_ghost(&ghosts[0]);
+                free_ghost(&ghosts[1]);
+                free_ghost(&ghosts[2]);
+                free_ghost(&ghosts[3]);
 
                 return STATE_MENU;
             }
@@ -91,7 +91,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         timeAccumulator += deltaTime;
         while (timeAccumulator > 1.0 / player.speed)
         {
-            if (moveGhost(&clyde, &map) == 2)
+            if (moveAllTheGosts(ghosts, 4, &map) == 2)
             {
                 player.lives--;
                 if (player.lives <= 0)
@@ -113,13 +113,19 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         }
         // Updates the player's animation and smoothly interpolates their position
         updatePlayer(&player, deltaTime);
-        updateGhost(&clyde, deltaTime);
+        updateGhost(&ghosts[0],deltaTime);
+        updateGhost(&ghosts[1],deltaTime);
+        updateGhost(&ghosts[2],deltaTime);
+        updateGhost(&ghosts[3],deltaTime);
 
         // **Rendering phase**
         SDL_RenderClear(renderer);            // Clear the screen
         renderMap(renderer, map);             // Render the map
         renderPlayer(renderer, &player, map); // Render the player
-        renderGhost(renderer, &clyde, map);
+        renderGhost(renderer, &ghosts[0], map);
+        renderGhost(renderer, &ghosts[1], map);
+        renderGhost(renderer, &ghosts[2], map);
+        renderGhost(renderer, &ghosts[3], map);
         renderUI(player, map, renderer);
 
         SDL_RenderPresent(renderer); // Present the new frame
@@ -128,9 +134,9 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     // Cleanup resources when exiting the loop
     FreeMap(&map);
     free_player(&player);
-    free_ghost(&blinky);
-    free_ghost(&pinky);
-    free_ghost(&inky);
-    free_ghost(&clyde);
+    free_ghost(&ghosts[0]);
+    free_ghost(&ghosts[1]);
+    free_ghost(&ghosts[2]);
+    free_ghost(&ghosts[3]);
     return STATE_MENU;
 }
