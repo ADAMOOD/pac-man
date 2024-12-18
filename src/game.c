@@ -26,14 +26,41 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         FreeMap(&map);
         return STATE_MENU;
     }
-    int pacInitX = player.x, pacInitY = player.y,pacInitDirection=player.direction;
+    int pacInitX = player.x, pacInitY = player.y, pacInitDirection = player.direction;
     SDL_Log("rows %d cols %d", map.rows, map.cols);
-    Ghost clyde;
-    if (init_ghost(&clyde, renderer, map, 'c', RANDOM, player) == 1)
+    Ghost blinky, pinky, inky, clyde;
+    if (init_ghost(&blinky, renderer, "../assets/BlinkySpriteSheet.png", map, 'b', RANDOM, player) == 1)
     {
         SDL_Log("Error initializing clyde");
         FreeMap(&map);
         free_player(&player);
+        return STATE_MENU;
+    }
+    if (init_ghost(&pinky, renderer, "../assets/PinkySpriteSheet.png", map, 'n', RANDOM, player) == 1)
+    {
+        SDL_Log("Error initializing clyde");
+        FreeMap(&map);
+        free_player(&player);
+        free_ghost(&blinky);
+        return STATE_MENU;
+    }
+    if (init_ghost(&inky, renderer, "../assets/InkySpriteSheet.png", map, 'i', RANDOM, player) == 1)
+    {
+        SDL_Log("Error initializing clyde");
+        FreeMap(&map);
+        free_player(&player);
+        free_ghost(&blinky);
+        free_ghost(&pinky);
+        return STATE_MENU;
+    }
+    if (init_ghost(&clyde, renderer, "../assets/ClydeSpriteSheet.png", map, 'c', RANDOM, player) == 1)
+    {
+        SDL_Log("Error initializing clyde");
+        FreeMap(&map);
+        free_player(&player);
+        free_ghost(&blinky);
+        free_ghost(&pinky);
+        free_ghost(&inky);
         return STATE_MENU;
     }
 
@@ -51,7 +78,11 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 // Cleanup resources when exiting the loop
                 FreeMap(&map);
                 free_player(&player);
+                free_ghost(&blinky);
+                free_ghost(&pinky);
+                free_ghost(&inky);
                 free_ghost(&clyde);
+
                 return STATE_MENU;
             }
             playerChangeDirection(event.key.keysym.sym, &player, map);
@@ -67,8 +98,8 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 {
                     running = 0;
                 }
-                player.direction=pacInitDirection;
-                movePlayerTo(pacInitX, pacInitY, &player,&map);
+                player.direction = pacInitDirection;
+                movePlayerTo(pacInitX, pacInitY, &player, &map);
                 SDL_Delay(3000);
                 continue;
             }
@@ -97,6 +128,9 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     // Cleanup resources when exiting the loop
     FreeMap(&map);
     free_player(&player);
+    free_ghost(&blinky);
+    free_ghost(&pinky);
+    free_ghost(&inky);
     free_ghost(&clyde);
     return STATE_MENU;
 }

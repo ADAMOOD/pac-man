@@ -28,7 +28,7 @@ typedef struct {
 } Ghost;
 
 
-int init_ghost(Ghost *ghost, SDL_Renderer *renderer, Map map, char indentifier,Movements movement,Player player);
+int init_ghost(Ghost *ghost, SDL_Renderer *renderer,char* texture, Map map, char indentifier, Movements movement, Player player);
 void changeDirection(SDL_Keycode key, Ghost *ghost, Map map);
 void renderGhost(SDL_Renderer *renderer, Ghost *ghost, Map m);
 int moveGhost(Ghost *ghost, Map *map);
