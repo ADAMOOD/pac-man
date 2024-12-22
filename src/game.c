@@ -29,7 +29,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     }
 
     // Načítání hudby
-    Mix_Music *background_music = Mix_LoadMUS("../assets/bacgroundMusici.mp3");
+   Mix_Music *background_music = Mix_LoadMUS("../assets/bacgroundMusici.mp3");
     if (background_music == NULL)
     {
         SDL_Log("Error loading background music: %s", Mix_GetError());
@@ -127,7 +127,6 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         timeAccumulator += deltaTime;
         while (timeAccumulator > 1.0 / player.speed)
         {
-            SDL_Log("%d", ghosts[0].state);
             if (moveGhost(&ghosts[0], &map) == 2 && ghosts[0].state == HUNTING ||
                 moveGhost(&ghosts[1], &map) == 2 && ghosts[1].state == HUNTING ||
                 moveGhost(&ghosts[2], &map) == 2 && ghosts[0].state == HUNTING ||
