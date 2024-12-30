@@ -244,9 +244,23 @@ int GetMapFile(Map *map)
     return 0;
 }
 
-void showMap(Map *map) {
+Map deepCopyMap(const Map *original) {
+    Map copy;
+    copy.rows = original->rows;
+    copy.cols = original->cols;
+
+    // Alokace paměti pro data
+    copy.data = malloc(copy.rows * sizeof(char *));
+    for (int i = 0; i < copy.rows; i++) {
+        copy.data[i] = malloc(copy.cols * sizeof(char));
+        memcpy(copy.data[i], original->data[i], copy.cols); // Kopíruje obsah řádku
+    }
+    return copy;
+}
+
+void showMap(Map map) {
     // Výpočet celkové velikosti pro alokaci
-    int totalSize = (map->rows * map->cols) + map->rows + 1; // + map->rows pro \n a +1 pro \0
+    int totalSize = (map.rows * map.cols) + map.rows + 1; // + map->rows pro \n a +1 pro \0
 
     // Alokace paměti
     char *result = (char *)malloc(totalSize * sizeof(char));
@@ -256,14 +270,14 @@ void showMap(Map *map) {
     }
 
     int pos = 0; // Ukazatel do výsledného řetězce
-    for (int i = 0; i < map->rows; i++) {
-        for (int j = 0; j < map->cols; j++) {
+    for (int i = 0; i < map.rows; i++) {
+        for (int j = 0; j < map.cols; j++) {
             // Kontrola dat během iterace
-            if (map->data[i][j] == '\0') {
+            if (map.data[i][j] == '\0') {
                 SDL_Log("Unexpected null character in map data at row %d, col %d", i, j);
                 result[pos++] = '?'; // Nahrazení neplatného znaku
             } else {
-                result[pos++] = map->data[i][j];
+                result[pos++] = map.data[i][j];
             }
         }
         result[pos++] = '\n'; // Přidání nového řádku
@@ -271,7 +285,7 @@ void showMap(Map *map) {
     result[pos] = '\0'; // Ukončení řetězce
 
     // Vykreslení mapy
-    SDL_Log("Map (%dx%d):\n%s", map->rows, map->cols, result);
+    SDL_Log("Map (%dx%d):\n%s", map.rows, map.cols, result);
 
     // Uvolnění paměti
     free(result);

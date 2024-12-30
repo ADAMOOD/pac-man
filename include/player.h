@@ -28,3 +28,4 @@ void updatePlayerAnim(Player *player, double deltaTime);
 void updatePlayer(Player *player, double deltaTime);
 int saveBestScore(Player player);
 void movePlayerTo(int x, int y, Player *player, Map *map);
+char getNextCell(Player *player, Map *map);

@@ -14,6 +14,7 @@ typedef enum
 {
     HUNTING,
     EATEABLE,
+    EATEN,
 } GHOSTSTATE;
 
 typedef struct
@@ -24,6 +25,7 @@ typedef struct
     double speed;                // Rychlost hráče
     SDL_Texture *texture;        // Textura pro celou postavu (sprite sheet)
     SDL_Texture *textureBlue;    // Textura pro celou postavu (sprite sheet)
+    SDL_Texture *eatenTexture;
     int currentFrame;            // Aktuální frame animace
     double frameTime;            // Čas pro každý frame
     double timeAccumulator;      // Akumulátor času pro animaci
@@ -34,6 +36,7 @@ typedef struct
     GHOSTSTATE state;
     char lastCell;
     int isMooving;
+    int **wayHome;
 } Ghost;
 
 int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, char indentifier, Movements movement, Player player);
@@ -46,3 +49,5 @@ void free_ghost(Ghost *ghost);
 void updateGhost(Ghost *ghost, double deltaTime);
 void setRandomDirection(Ghost *ghost);
 int moveAllTheGosts(Ghost *ghost, int count, Map *map);
+Ghost *getGhostById(Ghost *ghosts,int count, char id);
+int findAWayHome(Ghost *ghost,Map map);

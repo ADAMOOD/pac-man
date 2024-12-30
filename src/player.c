@@ -88,6 +88,39 @@ void updatePlayerRenderPosition(Player *player, double deltaTime) // interpolati
         player->renderY = player->y;
     }
 }
+char getNextCell(Player *player, Map *map)
+{
+
+    int newX = player->x;
+    int newY = player->y;
+
+    // Předpovědění nové pozice na základě směru
+    switch (player->direction)
+    {
+    case LEFT:
+        newX--;
+        break;
+    case RIGHT:
+        newX++;
+        break;
+    case UP:
+        newY--;
+        break;
+    case DOWN:
+        newY++;
+        break;
+    default:
+        return 0; // Žádný pohyb, pokud je směr neplatný
+    }
+
+    // Kontrola, jestli je nová pozice v rámci mapy
+    if (newX < 0 || newX >= map->cols || newY < 0 || newY >= map->rows)
+    {
+        return 0; // Žádný pohyb mimo hranice
+    }
+
+    return map->data[newY][newX];
+}
 int movePlayer(Player *player, Map *map)
 {
 
@@ -121,6 +154,11 @@ int movePlayer(Player *player, Map *map)
 
     char cell = map->data[newY][newX];
     const char *validCells = " .o10";
+    const char *ghosts = "bcni";
+    if (isCharInArray(cell, ghosts) == 0)
+    {
+        return 2;
+    }
     if (isCharInArray(cell, validCells) == 0)
     {
         if (cell == '1') // Pokud narazíme na teleport
@@ -234,15 +272,12 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
 }
 void movePlayerTo(int x, int y, Player *player, Map *map)
 {
-    showMap(map);
-    SDL_Log("player -> %d %d", player->x, player->y);
     map->data[player->y][player->x] = '.';
     map->data[y][x] = 'p';
     player->x = x;
     player->y = y;
     player->renderX = x;
     player->renderY = y;
-    showMap(map);
 }
 void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
 {

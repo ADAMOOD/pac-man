@@ -113,7 +113,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             char combinedString[256]; // Dostatečně velké pole pro výsledný řetězec
 
             // Spojení obou řetězců
-            sprintf(combinedString, "%s%d", "YOU WON! ",player.score);
+            sprintf(combinedString, "%s%d", "YOU WON! ", player.score);
             sdl_draw_text_center(renderer, combinedString);
             SDL_RenderPresent(renderer); // Aktualizovat obrazovku
 
@@ -135,9 +135,9 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 free_ghost(&ghosts[1]);
                 free_ghost(&ghosts[2]);
                 free_ghost(&ghosts[3]);
-               /* Mix_FreeMusic(background_music); 
-                Mix_CloseAudio();
-                Mix_Quit();*/
+                /* Mix_FreeMusic(background_music);
+                 Mix_CloseAudio();
+                 Mix_Quit();*/
                 return STATE_MENU;
             }
             playerChangeDirection(event.key.keysym.sym, &player, map);
@@ -146,34 +146,60 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         timeAccumulator += deltaTime;
         while (timeAccumulator > 1.0 / player.speed)
         {
-            if (moveGhost(&ghosts[0], &map) == 2 && ghosts[0].state == HUNTING ||
+            if (moveGhost(&ghosts[0], &map) == 2 && ghosts[0].state == HUNTING ||//GHOST ATTACKS PACMAN
                 moveGhost(&ghosts[1], &map) == 2 && ghosts[1].state == HUNTING ||
-                moveGhost(&ghosts[2], &map) == 2 && ghosts[0].state == HUNTING ||
-                moveGhost(&ghosts[3], &map) == 2 && ghosts[0].state == HUNTING)
+                moveGhost(&ghosts[2], &map) == 2 && ghosts[2].state == HUNTING ||
+                moveGhost(&ghosts[3], &map) == 2 && ghosts[3].state == HUNTING)
             {
-                Mix_HaltMusic();
-                player.lives--;
+                playerLostLife(&player, pacInitDirection, pacInitX, pacInitY, &map);
                 if (player.lives <= 0)
                 {
                     running = 0;
                 }
-                player.direction = pacInitDirection;
-                movePlayerTo(pacInitX, pacInitY, &player, &map);
-                SDL_Delay(3000);
-               /* if (Mix_PlayMusic(background_music, -1) == -1)
-                {
-                    SDL_Log("Error playing background music: %s", Mix_GetError());
-                    return -1;
-                }*/
                 continue;
             }
-            if (movePlayer(&player, &map) == 3)
+
+            switch (movePlayer(&player, &map))
+            {
+            case 3://PACMAN ATE BIG PEARL
             {
                 ghosts[0].state = EATEABLE;
                 ghosts[1].state = EATEABLE;
                 ghosts[2].state = EATEABLE;
                 ghosts[3].state = EATEABLE;
                 eating = 0;
+            }
+            break;
+            case 2://PACMAN MEETS A GHOST
+            {
+                //SDL_Log("narazil na ducha %c", getNextCell(&player, &map));
+                Ghost *meetedGhost = getGhostById(ghosts, 4, getNextCell(&player, &map));
+                switch (meetedGhost->state)
+                {
+                case EATEABLE:
+                {
+                    findAWayHome(meetedGhost,map);
+                    meetedGhost->state=EATEN;
+                    player.score+=100;
+                    movePlayerTo(pacInitX, pacInitY, &player, &map);
+                    break;
+                }
+                case HUNTING:
+                {
+                    playerLostLife(&player, pacInitDirection, pacInitX, pacInitY, &map);
+                    if (player.lives <= 0)
+                    {
+                        running = 0;
+                    }
+                    continue;
+                    break;
+                }
+                }
+
+            }
+
+            default:
+                break;
             }
             timeAccumulator -= 1.0 / player.speed;
         }
@@ -218,14 +244,30 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         SDL_Delay(16);               // Limit the frame rate to approximately 60 FPS
     }
     // Cleanup resources when exiting the loop
+    saveBestScore(player);
     FreeMap(&map);
     free_player(&player);
     free_ghost(&ghosts[0]);
     free_ghost(&ghosts[1]);
     free_ghost(&ghosts[2]);
     free_ghost(&ghosts[3]);
-   /* Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
-    Mix_CloseAudio();
-    Mix_Quit(); // Ukončení SDL_mixer*/
+    /* Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
+     Mix_CloseAudio();
+     Mix_Quit(); // Ukončení SDL_mixer*/
     return STATE_MENU;
+}
+
+void playerLostLife(Player *player, Direction pacInitDirection, int pacInitX, int pacInitY, Map *map)
+{
+    // Mix_HaltMusic();
+    player->lives--;
+
+    player->direction = pacInitDirection;
+    movePlayerTo(pacInitX, pacInitY, player, map);
+    SDL_Delay(3000);
+    /* if (Mix_PlayMusic(background_music, -1) == -1)
+     {
+         SDL_Log("Error playing background music: %s", Mix_GetError());
+         return -1;
+     }*/
 }

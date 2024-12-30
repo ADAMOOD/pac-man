@@ -50,8 +50,6 @@ int main(int argc, char *argv[])
         TTF_Quit();
         return 1;
     }
-    SDL_Color txtcolor = {255, 0, 0, 255};
-    SDL_Rect rect = {100, 200, 500, 200};
 
     int running = 1;
     SDL_Event event;
@@ -63,7 +61,7 @@ int main(int argc, char *argv[])
     {
         Uint64 now = SDL_GetPerformanceCounter();
         double deltaTime = (double)((now - last) / (double)SDL_GetPerformanceFrequency());
-        
+
         // Zpracování událostí
         while (SDL_PollEvent(&event))
         {
@@ -91,22 +89,18 @@ int main(int argc, char *argv[])
                 {
                     state = STATE_MENU; // Návrat do menu při stisku Escape
                 }
-                // Další zpracování herních událostí, pokud je potřeba
             }
         }
+
         // Vykreslování
         SDL_RenderClear(renderer);
-        if (state == STATE_EXIT)
-        {
-            running = 0; // Ukončení aplikacea
-        }
         if (state == STATE_MENU)
         {
             menu_render(renderer, selectedIndex);
         }
         else if (state == STATE_GAME)
         {
-            state = GameTest(renderer,deltaTime); // Vykreslení herní obrazovky
+            state = GameTest(renderer, deltaTime);
         }
         SDL_RenderPresent(renderer); // Aktualizace obrazovky
         last = now;
