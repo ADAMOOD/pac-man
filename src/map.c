@@ -170,6 +170,20 @@ int renderMap(SDL_Renderer *renderer, Map m)
 
     return 0;
 }
+int checkForPearlsLeft(Map map)
+{
+    for(int i=0;i<map.rows;i++)
+    {
+        for(int n=0;n<map.cols;n++)
+        {
+            if(map.data[i][n]==' '||map.data[i][n]=='o')
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 void getMapMesurements(Map map, int w, int h, int *wallPartSizeW, int *wallPartSizeH, int *marginX, int *marginY)
 {

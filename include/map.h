@@ -25,3 +25,4 @@ void printMapInDetail(Map m);
 void getMapMesurements(Map map,int w,int h, int *wallPartSizeW,int *wallPartSizeH,int *marginX,int *marginY);
 int fingOnMap(Map map,char c, int *x, int *y);
 void showMap(Map *map);
+int checkForPearlsLeft(Map map);

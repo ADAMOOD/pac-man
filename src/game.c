@@ -16,7 +16,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         return -1;
     }
 
-    if (Mix_Init(MIX_INIT_MP3) == 0)
+    /*if (Mix_Init(MIX_INIT_MP3) == 0)
     {
         SDL_Log("Mix_Init failed: %s", Mix_GetError());
         return -1;
@@ -29,7 +29,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     }
 
     // Načítání hudby
-   Mix_Music *background_music = Mix_LoadMUS("../assets/bacgroundMusici.mp3");
+    Mix_Music *background_music = Mix_LoadMUS("../assets/bacgroundMusici.mp3");
     if (background_music == NULL)
     {
         SDL_Log("Error loading background music: %s", Mix_GetError());
@@ -41,7 +41,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     {
         SDL_Log("Error playing background music: %s", Mix_GetError());
         return -1;
-    }
+    }*/
 
     // Load the map file
     if (GetMapFile(&map) != 0)
@@ -103,6 +103,25 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     double eating = 0.0;
     while (running)
     {
+        if (checkForPearlsLeft(map) == 0)
+        {
+            SDL_Log("Vyhra");
+
+            // Vyčistit obrazovku a vykreslit text
+            SDL_RenderClear(renderer);
+
+            char combinedString[256]; // Dostatečně velké pole pro výsledný řetězec
+
+            // Spojení obou řetězců
+            sprintf(combinedString, "%s%d", "YOU WON! ",player.score);
+            sdl_draw_text_center(renderer, combinedString);
+            SDL_RenderPresent(renderer); // Aktualizovat obrazovku
+
+            SDL_Delay(3000);
+
+            running = 0;
+            continue;
+        }
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT ||
@@ -116,9 +135,9 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 free_ghost(&ghosts[1]);
                 free_ghost(&ghosts[2]);
                 free_ghost(&ghosts[3]);
-                Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
+               /* Mix_FreeMusic(background_music); 
                 Mix_CloseAudio();
-                Mix_Quit(); // Ukončení SDL_mixer
+                Mix_Quit();*/
                 return STATE_MENU;
             }
             playerChangeDirection(event.key.keysym.sym, &player, map);
@@ -141,11 +160,11 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 player.direction = pacInitDirection;
                 movePlayerTo(pacInitX, pacInitY, &player, &map);
                 SDL_Delay(3000);
-                if (Mix_PlayMusic(background_music, -1) == -1)
+               /* if (Mix_PlayMusic(background_music, -1) == -1)
                 {
                     SDL_Log("Error playing background music: %s", Mix_GetError());
                     return -1;
-                }
+                }*/
                 continue;
             }
             if (movePlayer(&player, &map) == 3)
@@ -205,8 +224,8 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     free_ghost(&ghosts[1]);
     free_ghost(&ghosts[2]);
     free_ghost(&ghosts[3]);
-    Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
+   /* Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
     Mix_CloseAudio();
-    Mix_Quit(); // Ukončení SDL_mixer
+    Mix_Quit(); // Ukončení SDL_mixer*/
     return STATE_MENU;
 }

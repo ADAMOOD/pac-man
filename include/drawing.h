@@ -7,4 +7,5 @@
 
 void sdl_draw_text(SDL_Renderer* renderer, TTF_Font* font, SDL_Color color, SDL_Rect location, const char* text);
 void RenderFilledCircle(SDL_Renderer *renderer, int x, int y, int radius);
+void sdl_draw_text_center(SDL_Renderer *renderer, const char *text);
 
