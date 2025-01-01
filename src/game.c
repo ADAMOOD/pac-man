@@ -170,10 +170,10 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 {
                 case EATEABLE:
                 {
-                    findAWayHome(meetedGhost,map);
+                 findAWayHome(meetedGhost,map);
                     meetedGhost->state=EATEN;
                     player.score+=100;
-                    movePlayerTo(pacInitX, pacInitY, &player, &map);
+                    //movePlayerTo(pacInitX, pacInitY, &player, &map);
                     break;
                 }
                 case HUNTING:

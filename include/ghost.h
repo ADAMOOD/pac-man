@@ -37,6 +37,7 @@ typedef struct
     char lastCell;
     int isMooving;
     int **wayHome;
+    int stepsToHome;
 } Ghost;
 
 int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, char indentifier, Movements movement, Player player);
@@ -47,8 +48,10 @@ void updateGhostRenderPosition(Ghost *ghost, double deltaTime);
 void updateGhostAnim(Ghost *ghost, double deltaTime);
 void free_ghost(Ghost *ghost);
 void updateGhost(Ghost *ghost, double deltaTime);
-void setRandomDirection(Ghost *ghost);
+void setRandomDirection(Ghost *ghost,Map map);
 int moveAllTheGosts(Ghost *ghost, int count, Map *map);
 Ghost *getGhostById(Ghost *ghosts,int count, char id);
 int findAWayHome(Ghost *ghost,Map map);
-void writeStepsToGoHome(Ghost *ghost, Map map, char homeStep);
+
+int writeStepsToGoHome(Ghost *ghost, Map map);
+int cleanMap(Ghost ghost, Map* map,int steps);
