@@ -138,7 +138,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         timeAccumulator += deltaTime;
         while (timeAccumulator > 1.0 / player.speed)
         {
-            if (moveGhost(&ghosts[0], &map) == 2 && ghosts[0].state == HUNTING ||//GHOST ATTACKS PACMAN
+            if (moveGhost(&ghosts[0], &map) == 2 && ghosts[0].state == HUNTING || // GHOST ATTACKS PACMAN
                 moveGhost(&ghosts[1], &map) == 2 && ghosts[1].state == HUNTING ||
                 moveGhost(&ghosts[2], &map) == 2 && ghosts[2].state == HUNTING ||
                 moveGhost(&ghosts[3], &map) == 2 && ghosts[3].state == HUNTING)
@@ -153,7 +153,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
 
             switch (movePlayer(&player, &map))
             {
-            case 3://PACMAN ATE BIG PEARL
+            case 3: // PACMAN ATE BIG PEARL
             {
                 ghosts[0].state = EATEABLE;
                 ghosts[1].state = EATEABLE;
@@ -162,18 +162,16 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                 eating = 0;
             }
             break;
-            case 2://PACMAN MEETS A GHOST
+            case 2: // PACMAN MEETS A GHOST
             {
-                //SDL_Log("narazil na ducha %c", getNextCell(&player, &map));
-                Ghost *meetedGhost = getGhostById(ghosts, 4, getNextCell(&player, &map));
+                Ghost *meetedGhost = getGhostById(ghosts, 4, getNextCell(player, map));
                 switch (meetedGhost->state)
                 {
                 case EATEABLE:
                 {
-                 findAWayHome(meetedGhost,map);
-                    meetedGhost->state=EATEN;
-                    player.score+=100;
-                    //movePlayerTo(pacInitX, pacInitY, &player, &map);
+                    findAWayHome(meetedGhost, map);
+                    meetedGhost->state = EATEN;
+                    player.score += 100;
                     break;
                 }
                 case HUNTING:
@@ -187,7 +185,6 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
                     break;
                 }
                 }
-
             }
 
             default:
@@ -203,7 +200,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         {
             eating += deltaTime * 1000;
         }
-        if (eating > 5000)
+        if (eating > 7000)
         {
             ghosts[0].state = HUNTING;
             ghosts[1].state = HUNTING;
@@ -222,20 +219,24 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         updateGhost(&ghosts[2], deltaTime);
         updateGhost(&ghosts[3], deltaTime);
 
-        // **Rendering phase**
-        SDL_RenderClear(renderer);            // Clear the screen
-        renderMap(renderer, map);             // Render the map
+        // **Rendering phase
+        SDL_RenderClear(renderer); // Clear the screen
+
+        renderMap(renderer, map);
+
         renderPlayer(renderer, &player, map); // Render the player
+
         renderGhost(renderer, &ghosts[0], map);
         renderGhost(renderer, &ghosts[1], map);
         renderGhost(renderer, &ghosts[2], map);
         renderGhost(renderer, &ghosts[3], map);
+
         renderUI(player, map, renderer);
 
         SDL_RenderPresent(renderer); // Present the new frame
-        SDL_Delay(16);               // Limit the frame rate to approximately 60 FPS
+
+        SDL_Delay(16); // Limit the frame rate to approximately 60 FPS
     }
-    // Cleanup resources when exiting the loop
     saveBestScore(player);
     FreeMap(&map);
     free_player(&player);

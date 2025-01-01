@@ -64,25 +64,26 @@ void free_ghost(Ghost *ghost)
         SDL_DestroyTexture(ghost->eatenTexture);
         ghost->eatenTexture = NULL;
     }
+    freeWayHome(ghost);
 }
 
 int findAWayHome(Ghost *ghost, Map map)
 {
     Map localMap = deepCopyMap(&map);
 
-    localMap.data[ghost->y][ghost->x] = '3'; // Teď upravujete lokální kopii
-    // Directions for moving (up, down, left, right)
+    localMap.data[ghost->y][ghost->x] = '3';
+
     int directions[4][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
-    // Fronta pro souřadnice (použijeme paralelní pole)
+    // Queue for coordinates (using parallel arrays)
     int queueX[localMap.rows * localMap.cols];
     int queueY[localMap.rows * localMap.cols];
     int front = 0, back = 0;
 
-    // Inicializace startovní pozice
+    // Initialize the starting position
     queueX[back] = ghost->x;
     queueY[back++] = ghost->y;
-    localMap.data[ghost->y][ghost->x] = '3'; // Startovní bod
+    localMap.data[ghost->y][ghost->x] = '3'; // Starting point
 
     while (front < back)
     {
@@ -95,23 +96,22 @@ int findAWayHome(Ghost *ghost, Map map)
             int nx = currentX + directions[i][0];
             int ny = currentY + directions[i][1];
 
-            // Kontrola hranic mapy
+            // Check map boundaries
             if (nx < 0 || ny < 0 || nx >= localMap.cols || ny >= localMap.rows)
             {
                 continue;
             }
-
-            // Kontrola průchodnosti buňky a zda už byla navštívena
+            // Check if the cell is passable and not visited
             if (localMap.data[ny][nx] == ' ' || localMap.data[ny][nx] == '.' || localMap.data[ny][nx] == 'o')
             {
                 localMap.data[ny][nx] = currentWeight + 1 + '3';
                 queueX[back] = nx;
                 queueY[back++] = ny;
 
-                // Kontrola, zda jsme dosáhli cíle
+                // Check if we have reached the target
                 if (nx == ghost->homeX && ny == ghost->homeY)
                 {
-                    showMap(localMap); // Zobrazení mapy po každém kroku
+                    // showMap(localMap);
                     writeStepsToGoHome(ghost, localMap);
                     FreeMap(&localMap);
                     return 0;
@@ -120,29 +120,27 @@ int findAWayHome(Ghost *ghost, Map map)
         }
     }
     FreeMap(&localMap);
-    return -1; // Cesta nebyla nalezena
+    return -1; // Path not found
 }
+
 void freeWayHome(Ghost *ghost)
 {
-    // Ensure that the wayHome array exists and has been allocated
     if (ghost->wayHome != NULL)
     {
         for (int i = 0; i < ghost->stepsToHome + 1; i++)
         {
-            // Free each individual step (coordinate pair)
             free(ghost->wayHome[i]);
         }
-        // Free the main array
         free(ghost->wayHome);
-        ghost->wayHome = NULL; // Set the pointer to NULL to avoid dangling references
+        ghost->wayHome = NULL;
     }
 }
 int writeStepsToGoHome(Ghost *ghost, Map map)
 {
     int stepsHomeCount = (int)(map.data[ghost->homeY][ghost->homeX] - '3');
 
-    SDL_Log("Ghost %c home is on [%d:%d] with char '%c', which is step %d.",
-            ghost->id, ghost->homeY, ghost->homeX, map.data[ghost->homeY][ghost->homeX], stepsHomeCount);
+    /*SDL_Log("Ghost %c home is on [%d:%d] with char '%c', which is step %d.",
+            ghost->id, ghost->homeY, ghost->homeX, map.data[ghost->homeY][ghost->homeX], stepsHomeCount);*/
     ghost->stepsToHome = stepsHomeCount;
     // Alokace paměti pro pole ukazatelů (přidáváme 1 pro cílový bod '3')
     ghost->wayHome = (int **)malloc((stepsHomeCount + 1) * sizeof(int *));
@@ -228,14 +226,13 @@ int writeStepsToGoHome(Ghost *ghost, Map map)
     ghost->wayHome[step][0] = currentX;
     ghost->wayHome[step][1] = currentY;
     step++;
-
-    // Logování uložených kroků
-    for (int i = 0; i < step; i++)
-    {
-        SDL_Log("Step %d: [%d, %d] char '%c'", i, ghost->wayHome[i][0], ghost->wayHome[i][1], map.data[ghost->wayHome[i][1]][ghost->wayHome[i][0]]);
-    }
-
-    return step; // Vracíme celkový počet kroků (včetně cílového bodu)
+    /*
+        for (int i = 0; i < step; i++)
+        {
+            SDL_Log("Step %d: [%d, %d] char '%c'", i, ghost->wayHome[i][0], ghost->wayHome[i][1], map.data[ghost->wayHome[i][1]][ghost->wayHome[i][0]]);
+        }
+    */
+    return step;
 }
 
 void updateGhost(Ghost *ghost, double deltaTime)
@@ -299,9 +296,9 @@ int moveGhost(Ghost *ghost, Map *map)
     int newX = ghost->x;
     int newY = ghost->y;
     // Handle ghost's homecoming when eaten
-    if (ghost->state == EATEN &&ghost->stepsToHome!=0)
+    if (ghost->state == EATEN && ghost->stepsToHome != 0)
     {
-        ghost->lastCell='.';
+        ghost->lastCell = '.';
         newX = ghost->wayHome[ghost->stepsToHome][0];
         newY = ghost->wayHome[ghost->stepsToHome][1];
         char cell = map->data[newY][newX];
@@ -322,10 +319,13 @@ int moveGhost(Ghost *ghost, Map *map)
             freeWayHome(ghost);
             ghost->state = HUNTING; // Corrected to assignment
         }
-
         return 1; // Successful movement
     }
-
+    if (ghost->state == EATEN && ghost->x == ghost->homeX && ghost->y == ghost->homeY)
+    {
+        freeWayHome(ghost);
+        ghost->state = HUNTING; // Corrected to assignment
+    }
     // Předpovědění nové pozice na základě směru
     switch (ghost->direction)
     {

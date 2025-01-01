@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
     int result = MENU_CONTINUE;
     GameState state = STATE_MENU;
     Uint64 last = SDL_GetPerformanceCounter();
+    srand(time(NULL));
     while (running)
     {
         Uint64 now = SDL_GetPerformanceCounter();

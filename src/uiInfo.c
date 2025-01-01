@@ -16,37 +16,30 @@ void renderUI(Player player, Map map, SDL_Renderer *renderer)
         fontSize = 12; // Minimal size
     if (fontSize > 50)
         fontSize = 50; // Maximal size
-
-    // Load the font
     TTF_Font *font = TTF_OpenFont("pixelated.ttf", fontSize);
     if (!font)
     {
         SDL_Log("Failed to load font: %s", TTF_GetError());
         return;
     }
-
     int textWidth, textHeight;
     TTF_SizeText(font, scoreText, &textWidth, &textHeight);
-
     int wallPartSizeW, wallPartSizeH, marginX, marginY;
     getMapMesurements(map, w, h, &wallPartSizeW, &wallPartSizeH, &marginX, &marginY);
 
     // Ensure minimal space below the map
-    int minMarginBottom = h / 20; // Minimum bottom margin (5% of screen height)
+    int minMarginBottom = h / 20;
 
-    // Position of the score text
     SDL_Rect textLocation = {
         marginX + (wallPartSizeW * map.cols - textWidth) / 2, // Centered horizontally in map
         marginY + wallPartSizeH * map.rows + minMarginBottom, // Below the map
         textWidth,
         textHeight};
-
     if (textLocation.y + textLocation.h > h)
     {
         textLocation.y = h - textLocation.h - minMarginBottom;
     }
 
-    // Render the score text
     SDL_Color white = {255, 255, 255, 255};
     sdl_draw_text(renderer, font, white, textLocation, scoreText);
 

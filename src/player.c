@@ -46,9 +46,8 @@ void free_player(Player *player)
 
 void updatePlayer(Player *player, double deltaTime)
 {
-    // Update the player's animation, switching between frames of the sprite sheet
+    //sprite sheet switching
     updatePlayerAnim(player, deltaTime);
-
     // Smoothly interpolate the player's render position towards the logical position
     // to ensure visually fluid movement
     updatePlayerRenderPosition(player, deltaTime);
@@ -59,7 +58,6 @@ void updatePlayerAnim(Player *player, double deltaTime)
     player->timeAccumulator += deltaTime;
     if (player->timeAccumulator >= player->frameTime)
     {
-        // Přepnutí na další snímek animace
         player->currentFrame = (player->currentFrame + 1) % player->totalFrames;
         player->timeAccumulator -= player->frameTime;
     }
@@ -88,14 +86,11 @@ void updatePlayerRenderPosition(Player *player, double deltaTime) // interpolati
         player->renderY = player->y;
     }
 }
-char getNextCell(Player *player, Map *map)
+char getNextCell(Player player, Map map)
 {
-
-    int newX = player->x;
-    int newY = player->y;
-
-    // Předpovědění nové pozice na základě směru
-    switch (player->direction)
+    int newX = player.x;
+    int newY = player.y;
+    switch (player.direction)
     {
     case LEFT:
         newX--;
@@ -110,16 +105,13 @@ char getNextCell(Player *player, Map *map)
         newY++;
         break;
     default:
-        return 0; // Žádný pohyb, pokud je směr neplatný
+        return 0;
     }
-
-    // Kontrola, jestli je nová pozice v rámci mapy
-    if (newX < 0 || newX >= map->cols || newY < 0 || newY >= map->rows)
+    if (newX < 0 || newX >= map.cols || newY < 0 || newY >= map.rows)
     {
-        return 0; // Žádný pohyb mimo hranice
+        return 0;
     }
-
-    return map->data[newY][newX];
+    return map.data[newY][newX];
 }
 int movePlayer(Player *player, Map *map)
 {
@@ -243,7 +235,6 @@ void renderPlayer(SDL_Renderer *renderer, Player *player, Map m)
         double angle = 0.0;
         SDL_RendererFlip flip = SDL_FLIP_NONE;
 
-        // Určení rotace podle směru
         switch (player->direction)
         {
         case UP:
@@ -339,8 +330,6 @@ void playerChangeDirection(SDL_Keycode key, Player *player, Map map)
 int saveBestScore(Player player)
 {
     FILE *file = fopen("best.txt", "r+");
-
-    // file did not exist
     if (file == NULL)
     {
         FILE *file = fopen("best.txt", "w+");
