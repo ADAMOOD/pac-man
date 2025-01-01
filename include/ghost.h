@@ -51,3 +51,4 @@ void setRandomDirection(Ghost *ghost);
 int moveAllTheGosts(Ghost *ghost, int count, Map *map);
 Ghost *getGhostById(Ghost *ghosts,int count, char id);
 int findAWayHome(Ghost *ghost,Map map);
+void writeStepsToGoHome(Ghost *ghost, Map map, char homeStep);

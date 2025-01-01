@@ -105,20 +105,12 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     {
         if (checkForPearlsLeft(map) == 0)
         {
-            SDL_Log("Vyhra");
-
-            // Vyčistit obrazovku a vykreslit text
             SDL_RenderClear(renderer);
-
-            char combinedString[256]; // Dostatečně velké pole pro výsledný řetězec
-
-            // Spojení obou řetězců
+            char combinedString[256];
             sprintf(combinedString, "%s%d", "YOU WON! ", player.score);
             sdl_draw_text_center(renderer, combinedString);
-            SDL_RenderPresent(renderer); // Aktualizovat obrazovku
-
+            SDL_RenderPresent(renderer);
             SDL_Delay(3000);
-
             running = 0;
             continue;
         }

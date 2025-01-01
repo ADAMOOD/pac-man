@@ -29,7 +29,7 @@ int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, cha
         SDL_Log("Failed to load ghost Blue texture: %s", IMG_GetError());
         return 1;
     }
-        ghost->eatenTexture = IMG_LoadTexture(renderer, "../assets/eatenGhost.png");
+    ghost->eatenTexture = IMG_LoadTexture(renderer, "../assets/eatenGhost.png");
     if (ghost->eatenTexture == NULL)
     {
         SDL_Log("Failed to load eaten ghost texture: %s", IMG_GetError());
@@ -58,18 +58,18 @@ void free_ghost(Ghost *ghost)
         SDL_DestroyTexture(ghost->textureBlue);
         ghost->textureBlue = NULL;
     }
-        if (ghost->eatenTexture != NULL)
+    if (ghost->eatenTexture != NULL)
     {
         SDL_DestroyTexture(ghost->eatenTexture);
         ghost->eatenTexture = NULL;
     }
 }
 
-int findAWayHome(Ghost *ghost, Map map) {
+int findAWayHome(Ghost *ghost, Map map)
+{
     Map localMap = deepCopyMap(&map);
-   
-    
-    localMap.data[ghost->y][ghost->x] = '0'; // Teď upravujete lokální kopii
+
+    localMap.data[ghost->y][ghost->x] = '3'; // Teď upravujete lokální kopii
     // Directions for moving (up, down, left, right)
     int directions[4][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
@@ -81,42 +81,52 @@ int findAWayHome(Ghost *ghost, Map map) {
     // Inicializace startovní pozice
     queueX[back] = ghost->x;
     queueY[back++] = ghost->y;
-    localMap.data[ghost->y][ghost->x] = '0'; // Startovní bod
+    localMap.data[ghost->y][ghost->x] = '3'; // Startovní bod
 
-    while (front < back) {
+    while (front < back)
+    {
         int currentX = queueX[front];
         int currentY = queueY[front++];
-        int currentWeight = localMap.data[currentY][currentX] - '0';
+        int currentWeight = localMap.data[currentY][currentX] - '3';
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
+        {
             int nx = currentX + directions[i][0];
             int ny = currentY + directions[i][1];
 
             // Kontrola hranic mapy
-            if (nx < 0 || ny < 0 || nx >= localMap.cols || ny >= localMap.rows) {
+            if (nx < 0 || ny < 0 || nx >= localMap.cols || ny >= localMap.rows)
+            {
                 continue;
             }
 
             // Kontrola průchodnosti buňky a zda už byla navštívena
-            if (localMap.data[ny][nx] == ' ' || localMap.data[ny][nx] == '.') {
-                localMap.data[ny][nx] = currentWeight + 1 + '0';
+            if (localMap.data[ny][nx] == ' ' || localMap.data[ny][nx] == '.' || localMap.data[ny][nx] == 'o')
+            {
+                localMap.data[ny][nx] = currentWeight + 1 + '3';
                 queueX[back] = nx;
                 queueY[back++] = ny;
 
                 // Kontrola, zda jsme dosáhli cíle
-                if (nx == ghost->homeX && ny == ghost->homeY) {
+                if (nx == ghost->homeX && ny == ghost->homeY)
+                {
+                    showMap(localMap); // Zobrazení mapy po každém kroku
+                    writeStepsToGoHome(ghost, localMap, currentWeight);
                     FreeMap(&localMap);
                     return currentWeight + 1;
                 }
             }
         }
-
-        showMap(localMap); // Zobrazení mapy po každém kroku
     }
-            FreeMap(&localMap);
+    FreeMap(&localMap);
     return -1; // Cesta nebyla nalezena
 }
 
+void writeStepsToGoHome(Ghost *ghost, Map map, char homeStep)
+{
+    SDL_Log("Ghost %c home is on [%d:%d] with char '%c', which is step %d.",
+            ghost->id, ghost->homeX, ghost->homeY, homeStep, homeStep - '3');
+}
 
 void updateGhost(Ghost *ghost, double deltaTime)
 {
@@ -319,11 +329,11 @@ void renderGhost(SDL_Renderer *renderer, Ghost *ghost, Map m)
         SDL_Log("Ghost texture not set!");
     }
 }
-Ghost *getGhostById(Ghost *ghosts,int count, char id)
+Ghost *getGhostById(Ghost *ghosts, int count, char id)
 {
-    for (int i = 0; i < count; i++) 
+    for (int i = 0; i < count; i++)
     {
-        if (ghosts[i].id == id) 
+        if (ghosts[i].id == id)
         {
             return &ghosts[i]; // Vrátíme ukazatel na ducha
         }
@@ -333,7 +343,7 @@ Ghost *getGhostById(Ghost *ghosts,int count, char id)
 void setRandomDirection(Ghost *ghost)
 {
     // Seed the random number generator (you can call this once in the main program)
-    // srand(time(NULL)); // Uncomment this in your main function or during initialization
+    //  // Uncomment this in your main function or during initialization
 
     // Generate a random number between 0 and 3 to pick a direction
     int randomDirection = rand() % 4;
