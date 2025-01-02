@@ -130,15 +130,18 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             playerChangeDirection(event.key.keysym.sym, &player, map);
         }
         
-        if (gameState == GAME_PAUSED)
+        if (gameState == GAME_PAUSED)//player must have lost a life
         {
+
             pauseTimeAccumulator -= deltaTime;
+            sdl_draw_text_center(renderer, "ONE LIFE DOWN");
+            SDL_RenderPresent(renderer);
             if (pauseTimeAccumulator <= 0.0)
             {
                 gameState = GAME_RUNNING;
             }
 
-            continue; // Přeskočíme aktualizace herní logiky
+            continue;
         }
         //increese of the acumulator as the new iteration of the cycle is going
         playerTimeAccumulator += deltaTime;
@@ -203,7 +206,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         {
             eating += deltaTime * 1000;
         }
-        if (eating > 700000)
+        if (eating > 7000)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -251,7 +254,7 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
     {
         free_ghost(&ghosts[i]);
     }
-    /* Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
+    /* Mix_FreeMusic(background_music); 
      Mix_CloseAudio();
      Mix_Quit(); // Ukončení SDL_mixer*/
     return STATE_MENU;
@@ -265,5 +268,5 @@ void playerLostLife(Player *player, Direction pacInitDirection, int pacInitX, in
 
     // game is stopped for 3 sec
     *gameState = GAME_PAUSED;
-    *pauseTimeAccumulator = 3.0; // 3 sekundy pauzy
+    *pauseTimeAccumulator = 3.0; 
 }

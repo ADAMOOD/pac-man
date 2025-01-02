@@ -4,19 +4,20 @@
 #include "map.h"
 
 typedef struct {
-    int x, y;                    // Logická pozice hráče na mapě
-    double renderX, renderY;     // Vykreslená (interpolovaná) pozice
-    Direction direction;         // Směr pohybu hráče
-    double speed;                // Rychlost hráče
-    SDL_Texture *texture;        // Textura pro celou postavu (sprite sheet)
-    int currentFrame;            // Aktuální frame animace
-    double frameTime;            // Čas pro každý frame
-    double timeAccumulator;      // Akumulátor času pro animaci
-    int frameWidth, frameHeight; // Rozměry jednoho frame
-    int totalFrames;             // Počet celkových snímků animace
-    int score;
-    int lives;
+    int x, y;                    // Logical position of the player on the map (x, y coordinates)
+    double renderX, renderY;     // Rendered (interpolated) position on the screen (smooth movement)
+    Direction direction;         // Direction in which the player is moving (up, down, left, right)
+    double speed;                // Speed of the player's movement
+    SDL_Texture *texture;        // Texture for the entire player character (sprite sheet)
+    int currentFrame;            // The current frame in the sprite sheet for animation
+    double frameTime;            // Time duration for each animation frame
+    double timeAccumulator;      // Time accumulator for controlling the frame update based on deltaTime
+    int frameWidth, frameHeight; // Width and height of one frame in the sprite sheet
+    int totalFrames;             // Total number of frames in the sprite sheet animation
+    int score;                   // Player's current score
+    int lives;                   // Number of remaining lives for the player
 } Player;
+
 
 int init_player(Player *player, SDL_Renderer *renderer, Map map);
 int movePlayer(Player *player, Map *map);
