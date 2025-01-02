@@ -4,7 +4,6 @@
 #include "uiInfo.h"
 #include "ghost.h"
 
-// Main game loop for testing game state
 GameState GameTest(SDL_Renderer *renderer, double deltaTime)
 {
     SDL_Event event;
@@ -60,7 +59,6 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         return STATE_MENU;
     }
     int pacInitX = player.x, pacInitY = player.y, pacInitDirection = player.direction;
-    SDL_Log("rows %d cols %d", map.rows, map.cols);
     Ghost ghosts[4];
     if (init_ghost(&ghosts[0], renderer, "../assets/BlinkySpriteSheet.png", map, 'b', RANDOM, player) == 1)
     {
@@ -96,13 +94,19 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         free_ghost(&ghosts[2]);
         return STATE_MENU;
     }
-
-    double timeAccumulator = 0.0; // Accumulator to manage fixed time steps for player updates
-    int x, y;
+    GameState gameState = GAME_RUNNING;
+    double pauseTimeAccumulator = 0.0;
+    double playerTimeAccumulator = 0;
+    double ghostTimeAccumulator = 0;
     int running = 1;
     double eating = 0.0;
+    Uint64 previousTime = SDL_GetPerformanceCounter();
     while (running)
     {
+        // mesure time by the last frame
+        Uint64 currentTime = SDL_GetPerformanceCounter();
+        deltaTime = (double)(currentTime - previousTime) / SDL_GetPerformanceFrequency();
+        previousTime = currentTime;
         if (checkForPearlsLeft(map) == 0)
         {
             SDL_RenderClear(renderer);
@@ -114,83 +118,82 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
             running = 0;
             continue;
         }
+        //input handeling
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT ||
                 (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
             {
-                saveBestScore(player);
-                // Cleanup resources when exiting the loop
-                FreeMap(&map);
-                free_player(&player);
-                free_ghost(&ghosts[0]);
-                free_ghost(&ghosts[1]);
-                free_ghost(&ghosts[2]);
-                free_ghost(&ghosts[3]);
-                /* Mix_FreeMusic(background_music);
-                 Mix_CloseAudio();
-                 Mix_Quit();*/
-                return STATE_MENU;
+                running=0;
+                continue;
             }
             playerChangeDirection(event.key.keysym.sym, &player, map);
         }
-        // Update player logic
-        timeAccumulator += deltaTime;
-        while (timeAccumulator > 1.0 / player.speed)
+        
+        if (gameState == GAME_PAUSED)
         {
-            if (moveGhost(&ghosts[0], &map) == 2 && ghosts[0].state == HUNTING || // GHOST ATTACKS PACMAN
-                moveGhost(&ghosts[1], &map) == 2 && ghosts[1].state == HUNTING ||
-                moveGhost(&ghosts[2], &map) == 2 && ghosts[2].state == HUNTING ||
-                moveGhost(&ghosts[3], &map) == 2 && ghosts[3].state == HUNTING)
+            pauseTimeAccumulator -= deltaTime;
+            if (pauseTimeAccumulator <= 0.0)
             {
-                playerLostLife(&player, pacInitDirection, pacInitX, pacInitY, &map);
-                if (player.lives <= 0)
-                {
-                    running = 0;
-                }
-                continue;
+                gameState = GAME_RUNNING;
             }
 
+            continue; // Přeskočíme aktualizace herní logiky
+        }
+        //increese of the acumulator as the new iteration of the cycle is going
+        playerTimeAccumulator += deltaTime;
+        ghostTimeAccumulator += deltaTime;
+
+        // player actualization
+        while (playerTimeAccumulator > 1.0 / player.speed)
+        {
             switch (movePlayer(&player, &map))
             {
             case 3: // PACMAN ATE BIG PEARL
-            {
-                ghosts[0].state = EATEABLE;
-                ghosts[1].state = EATEABLE;
-                ghosts[2].state = EATEABLE;
-                ghosts[3].state = EATEABLE;
+                for (int i = 0; i < 4; i++)
+                    ghosts[i].state = EATEABLE;
                 eating = 0;
-            }
-            break;
+                break;
             case 2: // PACMAN MEETS A GHOST
             {
                 Ghost *meetedGhost = getGhostById(ghosts, 4, getNextCell(player, map));
                 switch (meetedGhost->state)
                 {
                 case EATEABLE:
-                {
                     findAWayHome(meetedGhost, map);
                     meetedGhost->state = EATEN;
                     player.score += 100;
                     break;
-                }
                 case HUNTING:
+                    playerLostLife(&player, pacInitDirection, pacInitX, pacInitY, &map,&gameState,&pauseTimeAccumulator);
+                    if (player.lives <= 0)
+                        running = 0;
+                    continue;
+                }
+                break;
+            }
+            default:
+                break;
+            }
+            playerTimeAccumulator -= 1.0 / player.speed;
+        }
+
+        // ghosts actualization
+        while (ghostTimeAccumulator > 1.0 / ghosts[0].speed)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (moveGhost(&ghosts[i], &map) == 2 && ghosts[i].state == HUNTING)
                 {
-                    playerLostLife(&player, pacInitDirection, pacInitX, pacInitY, &map);
+                    playerLostLife(&player, pacInitDirection, pacInitX, pacInitY, &map,&gameState,&pauseTimeAccumulator);
                     if (player.lives <= 0)
                     {
                         running = 0;
                     }
                     continue;
-                    break;
-                }
                 }
             }
-
-            default:
-                break;
-            }
-            timeAccumulator -= 1.0 / player.speed;
+            ghostTimeAccumulator -= 1.0 / ghosts[0].speed; 
         }
 
         if (ghosts[0].state == EATEABLE ||
@@ -200,67 +203,67 @@ GameState GameTest(SDL_Renderer *renderer, double deltaTime)
         {
             eating += deltaTime * 1000;
         }
-        if (eating > 7000)
+        if (eating > 700000)
         {
-            ghosts[0].state = HUNTING;
-            ghosts[1].state = HUNTING;
-            ghosts[2].state = HUNTING;
-            ghosts[3].state = HUNTING;
+            for (int i = 0; i < 4; i++)
+            {
+                ghosts[i].state = HUNTING;
+                freeWayHome(&ghosts[i]);
+            }
         }
         if (!running)
         {
             break; // Exit the loop after all updates
         }
+
         // Updates the player's animation and smoothly interpolates their position
         updatePlayer(&player, deltaTime);
-        // all the ghosts
-        updateGhost(&ghosts[0], deltaTime);
-        updateGhost(&ghosts[1], deltaTime);
-        updateGhost(&ghosts[2], deltaTime);
-        updateGhost(&ghosts[3], deltaTime);
 
-        // **Rendering phase
+        // all the ghosts
+        for (int i = 0; i < 4; i++)
+        {
+            renderGhost(renderer, &ghosts[i], map);
+            updateGhost(&ghosts[i], deltaTime);
+        }
+
+        // RENDERING PHASE
         SDL_RenderClear(renderer); // Clear the screen
 
         renderMap(renderer, map);
 
         renderPlayer(renderer, &player, map); // Render the player
 
-        renderGhost(renderer, &ghosts[0], map);
-        renderGhost(renderer, &ghosts[1], map);
-        renderGhost(renderer, &ghosts[2], map);
-        renderGhost(renderer, &ghosts[3], map);
+        for (int i = 0; i < 4; i++)
+        {
+            renderGhost(renderer, &ghosts[i], map);
+        }
 
         renderUI(player, map, renderer);
 
-        SDL_RenderPresent(renderer); // Present the new frame
+        SDL_RenderPresent(renderer); // Present the new frame !! important
 
-        SDL_Delay(16); // Limit the frame rate to approximately 60 FPS
     }
     saveBestScore(player);
+
     FreeMap(&map);
     free_player(&player);
-    free_ghost(&ghosts[0]);
-    free_ghost(&ghosts[1]);
-    free_ghost(&ghosts[2]);
-    free_ghost(&ghosts[3]);
+    for (int i = 0; i < 4; i++)
+    {
+        free_ghost(&ghosts[i]);
+    }
     /* Mix_FreeMusic(background_music); // Uvolnění hudby po jejím přehrání
      Mix_CloseAudio();
      Mix_Quit(); // Ukončení SDL_mixer*/
     return STATE_MENU;
 }
 
-void playerLostLife(Player *player, Direction pacInitDirection, int pacInitX, int pacInitY, Map *map)
+void playerLostLife(Player *player, Direction pacInitDirection, int pacInitX, int pacInitY, Map *map,GameState *gameState,double *pauseTimeAccumulator)
 {
-    // Mix_HaltMusic();
     player->lives--;
-
     player->direction = pacInitDirection;
     movePlayerTo(pacInitX, pacInitY, player, map);
-    SDL_Delay(3000);
-    /* if (Mix_PlayMusic(background_music, -1) == -1)
-     {
-         SDL_Log("Error playing background music: %s", Mix_GetError());
-         return -1;
-     }*/
+
+    // game is stopped for 3 sec
+    *gameState = GAME_PAUSED;
+    *pauseTimeAccumulator = 3.0; // 3 sekundy pauzy
 }

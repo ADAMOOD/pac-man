@@ -191,13 +191,12 @@ void getMapMesurements(Map map, int w, int h, int *wallPartSizeW, int *wallPartS
     int partWidth = w / map.cols;
     int partHeight = h / map.rows;
 
-    // Vyber menší velikost, aby se mapa vešla celá na obrazovku
     int minPartSize = (partWidth < partHeight) ? partWidth : partHeight;
 
     *wallPartSizeW = minPartSize;
     *wallPartSizeH = minPartSize;
 
-    // Výpočet okrajů pro centrování mapy na obrazovce
+    // margins of the map for its center pos
     *marginX = (w - (map.cols * minPartSize)) / 2;
     *marginY = (h - (map.rows * minPartSize)) / 2;
 }
@@ -209,15 +208,13 @@ void printMapInDetail(Map m)
         SDL_Log("Map is invalid");
         return;
     }
-
-    // Iterate through the map rows and columns to print the map.
     for (int r = 0; r < m.rows; r++)
     {
         for (int c = 0; c < m.cols; c++)
         {
-            SDL_Log(" %d [%c] ", c, m.data[r][c]); // Print each character in the map
+            SDL_Log(" %d [%c] ", c, m.data[r][c]);
         }
-        SDL_Log("\n"); // Newline after each row
+        SDL_Log("\n");
     }
 }
 
@@ -249,45 +246,46 @@ Map deepCopyMap(const Map *original) {
     copy.rows = original->rows;
     copy.cols = original->cols;
 
-    // Alokace paměti pro data
     copy.data = malloc(copy.rows * sizeof(char *));
     for (int i = 0; i < copy.rows; i++) {
         copy.data[i] = malloc(copy.cols * sizeof(char));
-        memcpy(copy.data[i], original->data[i], copy.cols); // Kopíruje obsah řádku
+        memcpy(copy.data[i], original->data[i], copy.cols);
     }
     return copy;
 }
 
 void showMap(Map map) {
-    // Výpočet celkové velikosti pro alokaci
-    int totalSize = (map.rows * map.cols) + map.rows + 1; // + map->rows pro \n a +1 pro \0
 
-    // Alokace paměti
+    if (mapIsInvalid(map))
+    {
+        SDL_Log("Map is invalid");
+        return;
+    }
+
+    int totalSize = (map.rows * map.cols) + map.rows + 1; // + map->rows for \n a +1 for \0
+
     char *result = (char *)malloc(totalSize * sizeof(char));
     if (result == NULL) {
         SDL_Log("Failed to allocate memory for map string");
         return;
     }
 
-    int pos = 0; // Ukazatel do výsledného řetězce
+    int pos = 0; 
     for (int i = 0; i < map.rows; i++) {
         for (int j = 0; j < map.cols; j++) {
-            // Kontrola dat během iterace
             if (map.data[i][j] == '\0') {
                 SDL_Log("Unexpected null character in map data at row %d, col %d", i, j);
-                result[pos++] = '?'; // Nahrazení neplatného znaku
+                result[pos++] = '?'; // replacement of the invalid char
             } else {
                 result[pos++] = map.data[i][j];
             }
         }
-        result[pos++] = '\n'; // Přidání nového řádku
+        result[pos++] = '\n';
     }
-    result[pos] = '\0'; // Ukončení řetězce
+    result[pos] = '\0';
 
-    // Vykreslení mapy
     SDL_Log("Map (%dx%d):\n%s", map.rows, map.cols, result);
 
-    // Uvolnění paměti
     free(result);
 }
 

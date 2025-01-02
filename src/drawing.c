@@ -1,5 +1,6 @@
 #include "drawing.h"
 
+
 void sdl_draw_text(SDL_Renderer *renderer, TTF_Font *font, SDL_Color color, SDL_Rect location, const char *text)
 {
     SDL_Surface *surface = TTF_RenderText_Blended(font, text, color);
@@ -28,6 +29,8 @@ void sdl_draw_text(SDL_Renderer *renderer, TTF_Font *font, SDL_Color color, SDL_
 
     SDL_DestroyTexture(texture); // Always destroy the texture after usage.
 }
+
+
 
 void sdl_draw_text_center(SDL_Renderer *renderer, const char *text)
 {

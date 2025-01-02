@@ -14,7 +14,7 @@ int init_player(Player *player, SDL_Renderer *renderer, Map map)
     player->y = y;
     player->renderX = x;
     player->renderY = y;
-    player->speed = 10.0;
+    player->speed = 7.0;
 
     // Načtení textury hráče
     player->texture = IMG_LoadTexture(renderer, "../assets/Pac-ManSpriteSheet.png");

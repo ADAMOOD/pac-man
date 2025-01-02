@@ -7,6 +7,8 @@
 #include <time.h>    // For time() to seed the random number generator
 typedef enum
 {
+    GAME_RUNNING,
+    GAME_PAUSED,
     STATE_MENU,
     STATE_GAME,
     STATE_EXIT

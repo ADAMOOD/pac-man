@@ -35,7 +35,7 @@ int init_ghost(Ghost *ghost, SDL_Renderer *renderer, char *texture, Map map, cha
         SDL_Log("Failed to load eaten ghost texture: %s", IMG_GetError());
         return 1;
     }
-    ghost->speed = player.speed / 0.8;
+    ghost->speed = player.speed * 0.9;
     ghost->currentFrame = 0;
     ghost->frameTime = 1.08;
     ghost->timeAccumulator = 0.0;
@@ -125,6 +125,7 @@ int findAWayHome(Ghost *ghost, Map map)
 
 void freeWayHome(Ghost *ghost)
 {
+    ghost->stepsToHome=0;
     if (ghost->wayHome != NULL)
     {
         for (int i = 0; i < ghost->stepsToHome + 1; i++)
@@ -138,7 +139,6 @@ void freeWayHome(Ghost *ghost)
 int writeStepsToGoHome(Ghost *ghost, Map map)
 {
     int stepsHomeCount = (int)(map.data[ghost->homeY][ghost->homeX] - '3');
-
     /*SDL_Log("Ghost %c home is on [%d:%d] with char '%c', which is step %d.",
             ghost->id, ghost->homeY, ghost->homeX, map.data[ghost->homeY][ghost->homeX], stepsHomeCount);*/
     ghost->stepsToHome = stepsHomeCount;
@@ -326,6 +326,10 @@ int moveGhost(Ghost *ghost, Map *map)
         freeWayHome(ghost);
         ghost->state = HUNTING; // Corrected to assignment
     }
+    if (ghost->state == EATEN && ghost->stepsToHome == 0)
+    {
+        findAWayHome(ghost,*map);
+    }
     // Předpovědění nové pozice na základě směru
     switch (ghost->direction)
     {
@@ -391,6 +395,10 @@ int moveGhost(Ghost *ghost, Map *map)
         ghost->x = newX;
         ghost->y = newY;
         ghost->isMooving = 1;
+       /* if((rand() % 4)==1)
+        {
+            setRandomDirection(ghost,*map);
+        }*/
         return 1; // Pohyb úspěšný
     }
     if ((cell == 'p') && (ghost->state == HUNTING))
@@ -479,29 +487,55 @@ Ghost *getGhostById(Ghost *ghosts, int count, char id)
 }
 void setRandomDirection(Ghost *ghost, Map map)
 {
-    // Seed the random number generator (you can call this once in the main program)
-    //  // Uncomment this in your main function or during initialization
+    int directions[4] = {UP, DOWN, LEFT, RIGHT};
+    int shuffledIndices[4] = {0, 1, 2, 3};
 
-    // Generate a random number between 0 and 3 to pick a direction
-    int randomDirection = rand() % 4;
-
-    // Set the ghost's direction based on the random number
-    switch (randomDirection)
+    // Shuffle the directions to try them in a random order
+    for (int i = 3; i > 0; i--)
     {
-    case 0:
-        ghost->direction = UP;
-        break;
-    case 1:
-        ghost->direction = DOWN;
-        break;
-    case 2:
-        ghost->direction = LEFT;
-        break;
-    case 3:
-        ghost->direction = RIGHT;
-        break;
-    default:
-        ghost->direction = UP; // Default to UP if something goes wrong
-        break;
+        int j = rand() % (i + 1);
+        int temp = shuffledIndices[i];
+        shuffledIndices[i] = shuffledIndices[j];
+        shuffledIndices[j] = temp;
     }
+
+    // Try each direction in the shuffled order
+    for (int i = 0; i < 4; i++)
+    {
+        int dir = directions[shuffledIndices[i]];
+        int nextX = ghost->x;
+        int nextY = ghost->y;
+
+        // Calculate the new position based on the direction
+        switch (dir)
+        {
+        case UP:
+            nextY--;
+            break;
+        case DOWN:
+            nextY++;
+            break;
+        case LEFT:
+            nextX--;
+            break;
+        case RIGHT:
+            nextX++;
+            break;
+        }
+
+        // Check if the new position is within the map boundaries and passable
+        if (nextX >= 0 && nextY >= 0 && nextX < map.cols && nextY < map.rows)
+        {
+            char nextCell = map.data[nextY][nextX];
+            if (nextCell == ' ' || nextCell == '.' || nextCell == 'o') // Passable cells
+            {
+                ghost->direction = dir;
+                return;
+            }
+        }
+    }
+
+    // If no valid direction is found, default to no movement
+    ghost->direction = UP; // Default direction or some fallback behavior
 }
+
